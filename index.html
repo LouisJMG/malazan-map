@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>World of Malazan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Leaflet CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    html, body, #map {
+      height: 100%;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script>
+    // Set original image dimensions
+    const imageWidth = 10000;
+    const imageHeight = 5571;
+
+    // Create Leaflet map
+    const map = L.map('map', {
+      crs: L.CRS.Simple,
+      minZoom: 0,
+      maxZoom: 6,
+      zoomControl: true
+    });
+
+    // Convert image dimensions to Leaflet bounds
+    const southWest = map.unproject([0, imageHeight], map.getMaxZoom());
+    const northEast = map.unproject([imageWidth, 0], map.getMaxZoom());
+    const bounds = new L.LatLngBounds(southWest, northEast);
+
+    // Add XYZ tile layer
+    L.tileLayer('tiles_xyz/{z}/{x}/{y}.png', {
+      noWrap: true,
+      bounds: bounds,
+      tms: false
+    }).addTo(map);
+
+    map.fitBounds(bounds);
+    map.setMaxBounds(bounds);
+
+    // 🖱 Click to get image coordinates
+    map.on('click', function(e) {
+      const point = map.project(e.latlng, map.getMaxZoom()).floor();
+      const message = `Clicked at image coordinates: X=${point.x}, Y=${point.y}`;
+      console.log(message);
+      L.popup()
+        .setLatLng(e.latlng)
+        .setContent(`<code>${message}</code>`)
+        .openOn(map);
+    });
+
+    // 📍 Unta
+    const unta = map.unproject([5571, 2579], map.getMaxZoom());
+    L.marker(unta)
+      .bindPopup('<strong>Unta</strong><br><a href="https://malazan.fandom.com/wiki/Unta" target="_blank">Wiki Entry</a>')
+      .bindTooltip("Unta", {permanent: false, direction: 'top'})
+      .addTo(map);
+
+    // 📍 Darujhistan
+    const darujhistan = map.unproject([6781, 1526], map.getMaxZoom());
+    L.marker(darujhistan)
+      .bindPopup('<strong>Darujhistan</strong><br><a href="https://malazan.fandom.com/wiki/Darujhistan" target="_blank">Wiki Entry</a>')
+      .bindTooltip("Darujhistan", {permanent: false, direction: 'top'})
+      .addTo(map);
+
+    // 📍 Letheras
+    const letheras = map.unproject([1203, 3511], map.getMaxZoom());
+    L.marker(letheras)
+      .bindPopup('<strong>Letheras</strong><br><a href="https://malazan.fandom.com/wiki/Letheras" target="_blank">Wiki Entry</a>')
+      .bindTooltip("Letheras", {permanent: false, direction: 'top'})
+      .addTo(map);
+  </script>
+</body>
+</html>
