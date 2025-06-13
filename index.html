@@ -3089,15 +3089,17 @@
 
     // Add all markers with invisible but large hitboxes
 locations.forEach(loc => {
-  const latlng = map.unproject(loc.coords, map.getMaxZoom());
-  L.circleMarker(latlng, {
-    radius: 15, // Increase for bigger hitbox
-    color: 'transparent',
-    fillOpacity: 0,
-    weight: 0
-  })
-  .bindPopup(`<strong>${loc.name}</strong><br><a href="${loc.link}" target="_blank">Wiki Entry</a>`)
-  .addTo(map);
+  loc.coords.forEach(coord => {
+    const latlng = map.unproject(coord, map.getMaxZoom());
+    L.circleMarker(latlng, {
+      radius: 15,
+      color: 'transparent',
+      fillOpacity: 0,
+      weight: 0
+    })
+    .bindPopup(`<strong>${loc.name}</strong><br><a href="${loc.link}" target="_blank">Wiki Entry</a>`)
+    .addTo(map);
+  });
 });
 
     // Dev tool – click to get image coordinates
