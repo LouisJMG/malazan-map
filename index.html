@@ -3091,14 +3091,9 @@
 locations.forEach(loc => {
   loc.coords.forEach(coord => {
     const latlng = map.unproject(coord, map.getMaxZoom());
-    L.circleMarker(latlng, {
-      radius: 15,
-      color: 'transparent',
-      fillOpacity: 0,
-      weight: 0
-    })
-    .bindPopup(`<strong>${loc.name}</strong><br><a href="${loc.link}" target="_blank">Wiki Entry</a>`)
-    .addTo(map);
+    L.marker(latlng, { icon: invisibleIcon }) // or L.circleMarker if preferred
+      .bindPopup(`<strong>${loc.name}</strong><br><a href="${loc.link}" target="_blank">Wiki Entry</a>`)
+      .addTo(map);
   });
 });
 
