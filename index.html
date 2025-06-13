@@ -14,9 +14,25 @@
       height: 100%;
       margin: 0;
     }
+    #locationSearch {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 1000;
+      padding: 6px 10px;
+      width: 250px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .invisible-icon {
+      background: none;
+      border: none;
+    }
   </style>
 </head>
 <body>
+  <input type="text" id="locationSearch" placeholder="Search for a location..." />
   <div id="map"></div>
 
   <script>
@@ -47,7 +63,3044 @@
     map.fitBounds(bounds);
     map.setMaxBounds(bounds);
 
-    // 🖱 Click to get image coordinates
+    // Invisible marker icon
+    const invisibleIcon = L.divIcon({
+      className: 'invisible-icon'
+    });
+
+    // Location data
+    const locations = [
+  {
+    name: "Lether",
+    coords: [(2410, 3278), (2680, 3326)],
+    link: "https://malazan.fandom.com/wiki/Lether"
+  },
+  {
+    name: "Tiste",
+    coords: [(1081, 3317)],
+    link: "https://malazan.fandom.com/wiki/Tiste"
+  },
+  {
+    name: "High Fort",
+    coords: [(1162, 3335)],
+    link: "https://malazan.fandom.com/wiki/High_Fort"
+  },
+  {
+    name: "Trate",
+    coords: [(1059, 3353)],
+    link: "https://malazan.fandom.com/wiki/Trate"
+  },
+  {
+    name: "Katter",
+    coords: [(1049, 3386)],
+    link: "https://malazan.fandom.com/wiki/Katter"
+  },
+  {
+    name: "Catch",
+    coords: [(1031, 3406)],
+    link: "https://malazan.fandom.com/wiki/Catch"
+  },
+  {
+    name: "Dresh",
+    coords: [(1008, 3439)],
+    link: "https://malazan.fandom.com/wiki/Dresh"
+  },
+  {
+    name: "Fort Shake",
+    coords: [(1191, 3373)],
+    link: "https://malazan.fandom.com/wiki/Fort_Shake"
+  },
+  {
+    name: "The Manse",
+    coords: [(1181, 3395)],
+    link: "https://malazan.fandom.com/wiki/The_Manse"
+  },
+  {
+    name: "White Point",
+    coords: [(1206, 3436)],
+    link: "https://malazan.fandom.com/wiki/White_Point"
+  },
+  {
+    name: "First Reach",
+    coords: [(1351, 3367)],
+    link: "https://malazan.fandom.com/wiki/First_Reach"
+  },
+  {
+    name: "Bran's Keep",
+    coords: [(1197, 3470)],
+    link: "https://malazan.fandom.com/wiki/Brans_Keep"
+  },
+  {
+    name: "Cargo",
+    coords: [(1105, 3505)],
+    link: "https://malazan.fandom.com/wiki/Cargo"
+  },
+  {
+    name: "Brous",
+    coords: [(1061, 3504)],
+    link: "https://malazan.fandom.com/wiki/Brous"
+  },
+  {
+    name: "Miner Sluice",
+    coords: [(1008, 3529)],
+    link: "https://malazan.fandom.com/wiki/Miner_Sluice"
+  },
+  {
+    name: "Harness",
+    coords: [(1047, 3590)],
+    link: "https://malazan.fandom.com/wiki/Harness"
+  },
+  {
+    name: "Letheras",
+    coords: [(1203, 3511)],
+    link: "https://malazan.fandom.com/wiki/Letheras"
+  },
+  {
+    name: "Cargo",
+    coords: [(1106, 3505)],
+    link: "https://malazan.fandom.com/wiki/Cargo"
+  },
+  {
+    name: "Awl",
+    coords: [(933, 3459)],
+    link: "https://malazan.fandom.com/wiki/Awl_(city)"
+  },
+  {
+    name: "Tulamesh",
+    coords: [(934, 3494)],
+    link: "https://malazan.fandom.com/wiki/Tulamesh"
+  },
+  {
+    name: "Rennis",
+    coords: [(944, 3531)],
+    link: "https://malazan.fandom.com/wiki/Rennis"
+  },
+  {
+    name: "Maiden Forts",
+    coords: [(915, 3387), (938, 3430)],
+    link: "https://malazan.fandom.com/wiki/Second_Maiden_Fort"
+  },
+  {
+    name: "Saltsong's Reach",
+    coords: [(714, 3434), (848, 3442)],
+    link: "https://malazan.fandom.com/wiki/Saltsong's_Reach"
+  },
+  {
+    name: "The Reach",
+    coords: [(871, 3335), (953, 3392)],
+    link: "https://malazan.fandom.com/wiki/The_Reach_(peninsula)"
+  },
+  {
+    name: "Katter Bight",
+    coords: [(961, 3381), (1010, 3406)],
+    link: "https://malazan.fandom.com/wiki/Katter_Bight"
+  },
+  {
+    name: "Brous (downriver)",
+    coords: [(1008, 3529)],
+    link: "https://malazan.fandom.com/wiki/Brous"
+  },
+  {
+    name: "Bridle",
+    coords: [(965, 3573)],
+    link: "https://malazan.fandom.com/wiki/Bridle"
+  },
+  {
+    name: "Old Gedure",
+    coords: [(969, 3641)],
+    link: "https://malazan.fandom.com/wiki/Old_Gedure"
+  },
+  {
+    name: "Sadon",
+    coords: [(972, 3693)],
+    link: "https://malazan.fandom.com/wiki/Sadon"
+  },
+  {
+    name: "Lenth",
+    coords: [(1037, 3702)],
+    link: "https://malazan.fandom.com/wiki/Lenth"
+  },
+  {
+    name: "Roster",
+    coords: [(1046, 3666)],
+    link: "https://malazan.fandom.com/wiki/Roster"
+  },
+  {
+    name: "Gedry",
+    coords: [(1068, 3664)],
+    link: "https://malazan.fandom.com/wiki/Gedry"
+  },
+  {
+    name: "Ouster Sea",
+    coords: [(900, 3721), (1035, 3737)],
+    link: "https://malazan.fandom.com/wiki/Ouster_Sea"
+  },
+  {
+    name: "Empire of Lether",
+    coords: [(1178, 3581), (1344, 3648)],
+    link: "https://malazan.fandom.com/wiki/Empire_of_Lether"
+  },
+  {
+    name: "Pockface Islands",
+    coords: [(888, 3881), (1000, 3918)],
+    link: "https://malazan.fandom.com/wiki/Pockface_Islands"
+  },
+  {
+    name: "Fire",
+    coords: [(948, 3997)],
+    link: "https://malazan.fandom.com/wiki/Fire_(city)"
+  },
+  {
+    name: "Korshenn",
+    coords: [(1025, 4009)],
+    link: "https://malazan.fandom.com/wiki/Korshenn"
+  },
+  {
+    name: "Twill",
+    coords: [(1120, 4001)],
+    link: "https://malazan.fandom.com/wiki/Twill"
+  },
+  {
+    name: "Ender",
+    coords: [(1192, 3980)],
+    link: "https://malazan.fandom.com/wiki/Ender"
+  },
+  {
+    name: "Pilott",
+    coords: [(1172, 3997), (1246, 4009)],
+    link: "https://malazan.fandom.com/wiki/Pilott"
+  },
+  {
+    name: "T'Roos",
+    coords: [(1200, 4111), (1278, 4125)],
+    link: "https://malazan.fandom.com/wiki/T'roos"
+  },
+  {
+    name: "Sea Iban",
+    coords: [(1313, 4083), (1372, 4136)],
+    link: "https://malazan.fandom.com/wiki/Sea_Iban"
+  },
+  {
+    name: "D'Aliban",
+    coords: [(1405, 4115), (1506, 4135)],
+    link: "https://malazan.fandom.com/wiki/D'aliban"
+  },
+  {
+    name: "Peck",
+    coords: [(1412, 4050)],
+    link: "https://malazan.fandom.com/wiki/Peck"
+  },
+  {
+    name: "Deal (city)",
+    coords: [(1489, 4075)],
+    link: "https://malazan.fandom.com/wiki/Deal"
+  },
+  {
+    name: "Krass",
+    coords: [(1542, 4068)],
+    link: "https://malazan.fandom.com/wiki/Krass"
+  },
+  {
+    name: "Deal",
+    coords: [(1467, 4023), (1523, 4038)],
+    link: "https://malazan.fandom.com/wiki/Deal"
+  },
+  {
+    name: "D'Rhasilhani",
+    coords: [(1535, 3922), (1689, 3939)],
+    link: "https://malazan.fandom.com/wiki/D'rhasilhani"
+  },
+  {
+    name: "Karn (city)",
+    coords: [(1356, 3917)],
+    link: "https://malazan.fandom.com/wiki/Karn"
+  },
+  {
+    name: "Karn",
+    coords: [(1258, 3908), (1320, 3925)],
+    link: "https://malazan.fandom.com/wiki/Karn"
+  },
+  {
+    name: "Tallis",
+    coords: [(1348, 3849)],
+    link: "https://malazan.fandom.com/wiki/Tallis"
+  },
+  {
+    name: "Truce",
+    coords: [(1378, 3839), (1448, 3851)],
+    link: "https://malazan.fandom.com/wiki/Truce_(nation)"
+  },
+  {
+    name: "Truce (city)",
+    coords: [(1372, 3818)],
+    link: "https://malazan.fandom.com/wiki/Truce_(city)"
+  },
+  {
+    name: "Beller",
+    coords: [(1366, 3796)],
+    link: "https://malazan.fandom.com/wiki/Beller"
+  },
+  {
+    name: "Feint",
+    coords: [(1486, 3815)],
+    link: "https://malazan.fandom.com/wiki/Feint"
+  },
+  {
+    name: "Obertull",
+    coords: [(1375, 3756)],
+    link: "https://malazan.fandom.com/wiki/Obertull"
+  },
+  {
+    name: "Gress",
+    coords: [(1327, 3740)],
+    link: "https://malazan.fandom.com/wiki/Gress"
+  },
+  {
+    name: "Trails",
+    coords: [(1212, 3752)],
+    link: "https://malazan.fandom.com/wiki/Trails"
+  },
+  {
+    name: "Deselen",
+    coords: [(1162, 3789)],
+    link: "https://malazan.fandom.com/wiki/Deselen"
+  },
+  {
+    name: "East Bay",
+    coords: [(1114, 3809), (1195, 3821)],
+    link: "https://malazan.fandom.com/wiki/East_Bay"
+  },
+  {
+    name: "Karyx",
+    coords: [(1040, 3917)],
+    link: "https://malazan.fandom.com/wiki/Karyx"
+  },
+  {
+    name: "Dracons Sea",
+    coords: [(1145, 3869), (1247, 3919)],
+    link: "https://malazan.fandom.com/wiki/Dracons_Sea"
+  },
+  {
+    name: "Deepwaters",
+    coords: [(1213, 3778), (1352, 3792)],
+    link: "https://malazan.fandom.com/wiki/Deepwaters"
+  },
+  {
+    name: "The Preserve",
+    coords: [(921, 3850), (1026, 3863)],
+    link: "https://malazan.fandom.com/wiki/The_Preserve"
+  },
+  {
+    name: "Ridge Island",
+    coords: [(1087, 3899), (1137, 3928)],
+    link: "https://malazan.fandom.com/wiki/Ridge_Island"
+  },
+  {
+    name: "Drene",
+    coords: [(1895, 3477)],
+    link: "https://malazan.fandom.com/wiki/Drene"
+  },
+  {
+    name: "Korasch",
+    coords: [(1815, 3521)],
+    link: "https://malazan.fandom.com/wiki/Korasch"
+  },
+  {
+    name: "Santchur",
+    coords: [(1751, 3557)],
+    link: "https://malazan.fandom.com/wiki/Santchur"
+  },
+  {
+    name: "Olived",
+    coords: [(1752, 3609)],
+    link: "https://malazan.fandom.com/wiki/Olived"
+  },
+  {
+    name: "Wend",
+    coords: [(1663, 3595)],
+    link: "https://malazan.fandom.com/wiki/Wend"
+  },
+  {
+    name: "Ouster",
+    coords: [(1626, 3664)],
+    link: "https://malazan.fandom.com/wiki/Ouster"
+  },
+  {
+    name: "Stall",
+    coords: [(1615, 3598)],
+    link: "https://malazan.fandom.com/wiki/Stall_(Lether)"
+  },
+  {
+    name: "Pearls",
+    coords: [(1573, 3558)],
+    link: "https://malazan.fandom.com/wiki/Pearls"
+  },
+  {
+    name: "Andara",
+    coords: [(1524, 3482)],
+    link: "https://malazan.fandom.com/wiki/Andara"
+  },
+  {
+    name: "Bluerose",
+    coords: [(1593, 3505)],
+    link: "https://malazan.fandom.com/wiki/Bluerose"
+  },
+  {
+    name: "Jasp",
+    coords: [(1615, 3434)],
+    link: "https://malazan.fandom.com/wiki/Jasp"
+  },
+  {
+    name: "Lekester",
+    coords: [(1709, 3510)],
+    link: "https://malazan.fandom.com/wiki/Lekester"
+  },
+  {
+    name: "Outbound",
+    coords: [(1702, 3358)],
+    link: "https://malazan.fandom.com/wiki/Outbound"
+  },
+  {
+    name: "Bluerose Sea",
+    coords: [(1654, 3426), (1866, 3443)],
+    link: "https://malazan.fandom.com/wiki/Bluerose_Sea"
+  },
+  {
+    name: "Kryn",
+    coords: [(1636, 3742), (1696, 3755)],
+    link: "https://malazan.fandom.com/wiki/Kryn"
+  },
+  {
+    name: "Kryn (city)",
+    coords: [(1662, 3784)],
+    link: "https://malazan.fandom.com/wiki/Kryn"
+  },
+  {
+    name: "Ak'ryn",
+    coords: [(1787, 3757), (1868, 3775)],
+    link: "https://malazan.fandom.com/wiki/Ak'ryn"
+  },
+  {
+    name: "Awl'dan",
+    coords: [(1957, 3620), (2056, 3636)],
+    link: "https://malazan.fandom.com/wiki/Awl'dan"
+  },
+  {
+    name: "Saphinand",
+    coords: [(1988, 3780), (2117, 3793)],
+    link: "https://malazan.fandom.com/wiki/Saphinand_Kingdom"
+  },
+  {
+    name: "Saphinand (city)",
+    coords: [(2041, 3814)],
+    link: "https://malazan.fandom.com/wiki/Saphinand_Kingdom"
+  },
+  {
+    name: "Bolkando",
+    coords: [(1755, 3945), (1881, 3962)],
+    link: "https://malazan.fandom.com/wiki/Bolkando"
+  },
+  {
+    name: "Bolkando (city)",
+    coords: [(1969, 3979)],
+    link: "https://malazan.fandom.com/wiki/Bolkando"
+  },
+  {
+    name: "The Wastelands",
+    coords: [(2179, 3754), (2378, 3770)],
+    link: "https://malazan.fandom.com/wiki/Wastelands"
+  },
+  {
+    name: "The Glass Desert",
+    coords: [(2449, 3696), (2670, 3711)],
+    link: "https://malazan.fandom.com/wiki/Glass_Desert"
+  },
+  {
+    name: "Icarias",
+    coords: [(2556, 3612)],
+    link: "https://malazan.fandom.com/wiki/Icarias"
+  },
+  {
+    name: "Ses Mountains",
+    coords: [(3080, 3576), (3218, 3592)],
+    link: "https://malazan.fandom.com/wiki/Ses_Mountains"
+  },
+  {
+    name: "North Citadel",
+    coords: [(3111, 3618)],
+    link: "https://malazan.fandom.com/wiki/North_Citadel"
+  },
+  {
+    name: "Estobanese Province",
+    coords: [(2892, 3649), (3144, 3662)],
+    link: "https://malazan.fandom.com/wiki/Estobanse"
+  },
+  {
+    name: "Gest Pass",
+    coords: [(2930, 3679), (2970, 3755)],
+    link: "https://malazan.fandom.com/wiki/Gest_Pass"
+  },
+  {
+    name: "East Elan Plain",
+    coords: [(2782, 3772), (2980, 3792)],
+    link: "https://malazan.fandom.com/wiki/East_Elan_Plain"
+  },
+  {
+    name: "Back",
+    coords: [(3171, 3658)],
+    link: "https://malazan.fandom.com/wiki/Back"
+  },
+  {
+    name: "Danan",
+    coords: [(3219, 3676)],
+    link: "https://malazan.fandom.com/wiki/Danan"
+  },
+  {
+    name: "Hetok",
+    coords: [(3254, 3697)],
+    link: "https://malazan.fandom.com/wiki/Hetok"
+  },
+  {
+    name: "Trelar",
+    coords: [(3247, 3732)],
+    link: "https://malazan.fandom.com/wiki/Trelar"
+  },
+  {
+    name: "Spire",
+    coords: [(3240, 3795)],
+    link: "https://malazan.fandom.com/wiki/Spire"
+  },
+  {
+    name: "Kolanse",
+    coords: [(3209, 3794)],
+    link: "https://malazan.fandom.com/wiki/Kolanse"
+  },
+  {
+    name: "Valley of Blessed Gift",
+    coords: [(2938, 3812), (3225, 3831)],
+    link: "https://malazan.fandom.com/wiki/Valley_of_Blessed_Gift"
+  },
+  {
+    name: "Stet",
+    coords: [(2887, 3876)],
+    link: "https://malazan.fandom.com/wiki/Stet"
+  },
+  {
+    name: "Kingdom of Kolanse",
+    coords: [(2727, 3919), (3143, 3945)],
+    link: "https://malazan.fandom.com/wiki/Kolanse"
+  },
+  {
+    name: "Okan",
+    coords: [(2998, 4007)],
+    link: "https://malazan.fandom.com/wiki/Okan"
+  },
+  {
+    name: "Korbanse",
+    coords: [(3345, 3940)],
+    link: "https://malazan.fandom.com/wiki/Korbanse"
+  },
+  {
+    name: "Korbanse Province",
+    coords: [(3311, 3967), (3382, 4187)],
+    link: "https://malazan.fandom.com/wiki/Korbanse"
+  },
+  {
+    name: "Kanros",
+    coords: [(3147, 4125)],
+    link: "https://malazan.fandom.com/wiki/Kanros"
+  },
+  {
+    name: "Krosis",
+    coords: [(2992, 4220)],
+    link: "https://malazan.fandom.com/wiki/Krosis"
+  },
+  {
+    name: "Pelasiar Sea",
+    coords: [(2996, 4318), (3127, 4374)],
+    link: "https://malazan.fandom.com/wiki/Pelasiar_Sea"
+  },
+  {
+    name: "Jacuruku",
+    coords: [(4254, 3954), (4610, 4006)],
+    link: "https://malazan.fandom.com/wiki/Jacuruku"
+  },
+  {
+    name: "Dolmens of Tien",
+    coords: [(4569, 3303)],
+    link: "https://malazan.fandom.com/wiki/Dolmens_of_Tien"
+  },
+  {
+    name: "Anditi Pura",
+    coords: [(4430, 3403)],
+    link: "https://malazan.fandom.com/wiki/Anditi_Pura"
+  },
+  {
+    name: "Thaumaturg Kingdom",
+    coords: [(4314, 3447), (4464, 3489)],
+    link: "https://malazan.fandom.com/wiki/Thaumaturg"
+  },
+  {
+    name: "Isana Pura",
+    coords: [(4382, 3522)],
+    link: "https://malazan.fandom.com/wiki/Isana_Pura"
+  },
+  {
+    name: "Canyon Lands",
+    coords: [(4410, 3563), (4506, 3603)],
+    link: "https://malazan.fandom.com/wiki/Canyon_Lands"
+  },
+  {
+    name: "Gangrek Range",
+    coords: [(4510, 3451), (4572, 3631)],
+    link: "https://malazan.fandom.com/wiki/Gangrek_Range"
+  },
+  {
+    name: "Desert of the Adwami Tribes",
+    coords: [(4340, 3694), (4520, 3734)],
+    link: "https://malazan.fandom.com/wiki/Desert_of_the_Adwami_Tribes"
+  },
+  {
+    name: "Jakal Viharn",
+    coords: [(4635, 3519)],
+    link: "https://malazan.fandom.com/wiki/Jakal_Viharn"
+  },
+  {
+    name: "Jungle of Himatan",
+    coords: [(4681, 3749), (4807, 3790)],
+    link: "https://malazan.fandom.com/wiki/Jungle_of_Himatan"
+  },
+  {
+    name: "White Spires Ocean (Explorer's Sea)",
+    coords: [(4140, 4316), (4896, 4504)],
+    link: "https://malazan.fandom.com/wiki/White_Spires_Ocean"
+  },
+  {
+    name: "Domain Ocean",
+    coords: [(114, 3722), (690, 3836)],
+    link: "https://malazan.fandom.com/wiki/Domain_Ocean"
+  },
+  {
+    name: "Horn Ocean",
+    coords: [(4228, 2708), (4752, 2764)],
+    link: "https://malazan.fandom.com/wiki/Horn_Ocean"
+  },
+  {
+    name: "Sea of Storms",
+    coords: [(5102, 3050), (5562, 3134)],
+    link: "https://malazan.fandom.com/wiki/Sea_of_Storms"
+  },
+  {
+    name: "Reacher's Ocean",
+    coords: [(6096, 2430), (6688, 2502)],
+    link: "https://malazan.fandom.com/wiki/Reacher's_Ocean"
+  },
+  {
+    name: "Seeker's Deep (Meningalle Ocean)",
+    coords: [(5934, 1198), (6446, 1474)],
+    link: "https://malazan.fandom.com/wiki/Seeker's_Deep"
+  },
+  {
+    name: "Dryjna Ocean",
+    coords: [(4430, 552), (4996, 624)],
+    link: "https://malazan.fandom.com/wiki/Dryjna_Ocean"
+  },
+  {
+    name: "Bloodmare Ocean",
+    coords: [(6802, 3142), (7040, 3734)],
+    link: "https://malazan.fandom.com/wiki/Bloodmare_Ocean"
+  },
+  {
+    name: "Domain Ocean (East)",
+    coords: [(8806, 3352), (9406, 3424)],
+    link: "https://malazan.fandom.com/wiki/Domain_Ocean"
+  },
+  {
+    name: "Rust Ocean",
+    coords: [(7958, 1038), (8426, 1104)],
+    link: "https://malazan.fandom.com/wiki/Rust_Ocean"
+  },
+  {
+    name: "Korelri (Fist)",
+    coords: [(6106, 2694), (6610, 2750)],
+    link: "https://malazan.fandom.com/wiki/Korelri"
+  },
+  {
+    name: "Isle of Fist",
+    coords: [(6199, 2859), (6342, 2873)],
+    link: "https://malazan.fandom.com/wiki/Fist_Island"
+  },
+  {
+    name: "Skolati",
+    coords: [(6454, 2817), (6549, 2832)],
+    link: "https://malazan.fandom.com/wiki/Skolati"
+  },
+  {
+    name: "Fist Sea",
+    coords: [(6344, 2900), (6440, 2914)],
+    link: "https://malazan.fandom.com/wiki/Fist_Sea"
+  },
+  {
+    name: "Rool",
+    coords: [(6301, 3047), (6362, 3060)],
+    link: "https://malazan.fandom.com/wiki/Rool"
+  },
+  {
+    name: "Mare",
+    coords: [(6387, 3161), (6448, 3175)],
+    link: "https://malazan.fandom.com/wiki/Mare"
+  },
+  {
+    name: "Dorik",
+    coords: [(6309, 2928)],
+    link: "https://malazan.fandom.com/wiki/Dorik"
+  },
+  {
+    name: "Lorest",
+    coords: [(6464, 2873)],
+    link: "https://malazan.fandom.com/wiki/Lorest"
+  },
+  {
+    name: "Falt",
+    coords: [(6555, 2878)],
+    link: "https://malazan.fandom.com/wiki/Falt"
+  },
+  {
+    name: "Homdo",
+    coords: [(6195, 2956)],
+    link: "https://malazan.fandom.com/wiki/Homdo"
+  },
+  {
+    name: "Lallit",
+    coords: [(6188, 3014)],
+    link: "https://malazan.fandom.com/wiki/Lallit"
+  },
+  {
+    name: "Thol",
+    coords: [(6338, 2991)],
+    link: "https://malazan.fandom.com/wiki/Thol"
+  },
+  {
+    name: "Paliss",
+    coords: [(6249, 3023)],
+    link: "https://malazan.fandom.com/wiki/Paliss"
+  },
+  {
+    name: "Banith",
+    coords: [(6266, 3073)],
+    link: "https://malazan.fandom.com/wiki/Banith"
+  },
+  {
+    name: "Zestr",
+    coords: [(6354, 3097)],
+    link: "https://malazan.fandom.com/wiki/Zestr"
+  },
+  {
+    name: "Black City",
+    coords: [(6375, 3139)],
+    link: "https://malazan.fandom.com/wiki/Black_City"
+  },
+  {
+    name: "Rivdo",
+    coords: [(6423, 3211)],
+    link: "https://malazan.fandom.com/wiki/Rivdo"
+  },
+  {
+    name: "Kevil",
+    coords: [(6453, 3275)],
+    link: "https://malazan.fandom.com/wiki/Kevil"
+  },
+  {
+    name: "Kren",
+    coords: [(6435, 3117)],
+    link: "https://malazan.fandom.com/wiki/Kren"
+  },
+  {
+    name: "Mald",
+    coords: [(6514, 3112)],
+    link: "https://malazan.fandom.com/wiki/Mald"
+  },
+  {
+    name: "Three Sisters",
+    coords: [(6442, 3061)],
+    link: "https://malazan.fandom.com/wiki/Three_Sisters"
+  },
+  {
+    name: "Haft",
+    coords: [(6442, 3023)],
+    link: "https://malazan.fandom.com/wiki/Haft"
+  },
+  {
+    name: "Gost",
+    coords: [(6512, 3017)],
+    link: "https://malazan.fandom.com/wiki/Gost"
+  },
+  {
+    name: "Aamil",
+    coords: [(6528, 2986)],
+    link: "https://malazan.fandom.com/wiki/Aamil"
+  },
+  {
+    name: "Ft. Drii",
+    coords: [(6488, 2934)],
+    link: "https://malazan.fandom.com/wiki/Fort_Drii"
+  },
+  {
+    name: "East Watch",
+    coords: [(6542, 3359)],
+    link: "https://malazan.fandom.com/wiki/East_Watch"
+  },
+  {
+    name: "The Deep Wilderness",
+    coords: [(6228, 3426), (6375, 3469)],
+    link: "https://malazan.fandom.com/wiki/Deep_Wilderness"
+  },
+  {
+    name: "Ebon Mountains",
+    coords: [(6237, 3328), (6332, 3363)],
+    link: "https://malazan.fandom.com/wiki/Ebon_Mountains"
+  },
+  {
+    name: "Shale",
+    coords: [(6176, 3319)],
+    link: "https://malazan.fandom.com/wiki/Shale"
+  },
+  {
+    name: "Stygg",
+    coords: [(6210, 3282), (6264, 3317)],
+    link: "https://malazan.fandom.com/wiki/Stygg"
+  },
+  {
+    name: "Shroud",
+    coords: [(6231, 3264)],
+    link: "https://malazan.fandom.com/wiki/Shroud"
+  },
+  {
+    name: "Cast",
+    coords: [(6246, 3224)],
+    link: "https://malazan.fandom.com/wiki/Cast"
+  },
+  {
+    name: "Shade",
+    coords: [(6287, 3239)],
+    link: "https://malazan.fandom.com/wiki/Shade"
+  },
+  {
+    name: "Dim",
+    coords: [(6288, 3205)],
+    link: "https://malazan.fandom.com/wiki/Dim_(city)"
+  },
+  {
+    name: "Ebon",
+    coords: [(6310, 3137)],
+    link: "https://malazan.fandom.com/wiki/Ebon"
+  },
+  {
+    name: "Drak",
+    coords: [(6341, 3219)],
+    link: "https://malazan.fandom.com/wiki/Drak"
+  },
+  {
+    name: "Sty",
+    coords: [(6293, 3296)],
+    link: "https://malazan.fandom.com/wiki/Sty"
+  },
+  {
+    name: "Plains of Blight",
+    coords: [(5817, 3572), (5932, 3634)],
+    link: "https://malazan.fandom.com/wiki/Plains_of_Blight"
+  },
+  {
+    name: "Iceback Range",
+    coords: [(5950, 3598), (6118, 3623)],
+    link: "https://malazan.fandom.com/wiki/Iceback_Range"
+  },
+  {
+    name: "Blight Sea",
+    coords: [(5718, 3584), (5780, 3697)],
+    link: "https://malazan.fandom.com/wiki/Blight_Sea"
+  },
+  {
+    name: "Lorti",
+    coords: [(5759, 3560)],
+    link: "https://malazan.fandom.com/wiki/Lorti"
+  },
+  {
+    name: "Dami",
+    coords: [(5738, 3514)],
+    link: "https://malazan.fandom.com/wiki/Dami"
+  },
+  {
+    name: "Zelt",
+    coords: [(5813, 3499)],
+    link: "https://malazan.fandom.com/wiki/Zelt"
+  },
+  {
+    name: "Jasston",
+    coords: [(5758, 3456), (5821, 3479)],
+    link: "https://malazan.fandom.com/wiki/Jasston"
+  },
+  {
+    name: "Jassr",
+    coords: [(5810, 3421)],
+    link: "https://malazan.fandom.com/wiki/Jassr"
+  },
+  {
+    name: "The Curl",
+    coords: [(5855, 3461), (5964, 3477)],
+    link: "https://malazan.fandom.com/wiki/The_Curl"
+  },
+  {
+    name: "Blight",
+    coords: [(5685, 3624)],
+    link: "https://malazan.fandom.com/wiki/Blight"
+  },
+  {
+    name: "Ring",
+    coords: [(5627, 3541)],
+    link: "https://malazan.fandom.com/wiki/Ring"
+  },
+  {
+    name: "Jourilan Empire",
+    coords: [(5553, 3578), (5662, 3619)],
+    link: "https://malazan.fandom.com/wiki/Jourilan"
+  },
+  {
+    name: "Aurgatt Range",
+    coords: [(5819, 3770), (6007, 3788)],
+    link: "https://malazan.fandom.com/wiki/Aurgatt_Range"
+  },
+  {
+    name: "Antr",
+    coords: [(5447, 3705)],
+    link: "https://malazan.fandom.com/wiki/Antr"
+  },
+  {
+    name: "Pon-Rou",
+    coords: [(5509, 3669)],
+    link: "https://malazan.fandom.com/wiki/Pon-Ruo"
+  },
+  {
+    name: "Golk",
+    coords: [(5474, 3665)],
+    link: "https://malazan.fandom.com/wiki/Golk"
+  },
+  {
+    name: "Damos",
+    coords: [(5446, 3546)],
+    link: "https://malazan.fandom.com/wiki/Damos"
+  },
+  {
+    name: "Damos Bay",
+    coords: [(5431, 3455), (5506, 3493)],
+    link: "https://malazan.fandom.com/wiki/Damos_Bay"
+  },
+  {
+    name: "Jour",
+    coords: [(5538, 3468)],
+    link: "https://malazan.fandom.com/wiki/Jour"
+  },
+  {
+    name: "Dourkan",
+    coords: [(5566, 3428), (5678, 3445)],
+    link: "https://malazan.fandom.com/wiki/Dourkan"
+  },
+  {
+    name: "Dourkal",
+    coords: [(5632, 3394)],
+    link: "https://malazan.fandom.com/wiki/Dourkol"
+  },
+  {
+    name: "Wolt",
+    coords: [(5605, 3350)],
+    link: "https://malazan.fandom.com/wiki/Wolt"
+  },
+  {
+    name: "Dour",
+    coords: [(5673, 3334)],
+    link: "https://malazan.fandom.com/wiki/Dour"
+  },
+  {
+    name: "Flow Strait",
+    coords: [(5714, 3428), (5787, 3442)],
+    link: "https://malazan.fandom.com/wiki/Flow_Strait"
+  },
+  {
+    name: "Ghost City",
+    coords: [(5698, 3431)],
+    link: "https://malazan.fandom.com/wiki/Ghost_City"
+  },
+  {
+    name: "Remnant Isle",
+    coords: [(5690, 3316), (5796, 3356)],
+    link: "https://malazan.fandom.com/wiki/Remnant_Isle"
+  },
+  {
+    name: "Children's Ridge Mountains",
+    coords: [(5773, 3240), (5976, 3266)],
+    link: "https://malazan.fandom.com/wiki/Children_Ridge_Mountains"
+  },
+  {
+    name: "Tower Sea",
+    coords: [(5815, 3278), (5942, 3290)],
+    link: "https://malazan.fandom.com/wiki/Tower_Sea"
+  },
+  {
+    name: "Sky Tower",
+    coords: [(5871, 3323)],
+    link: "https://malazan.fandom.com/wiki/Sky_Tower"
+  },
+  {
+    name: "Protector Isle",
+    coords: [(5963, 3334), (6096, 3377)],
+    link: "https://malazan.fandom.com/wiki/Protector_Isle"
+  },
+  {
+    name: "Sender's Sea",
+    coords: [(6034, 3201), (6230, 3220)],
+    link: "https://malazan.fandom.com/wiki/Sender's_Sea"
+  },
+  {
+    name: "Fall Strait",
+    coords: [(6022, 3084), (6101, 3126)],
+    link: "https://malazan.fandom.com/wiki/Fall_Strait"
+  },
+  {
+    name: "Pirate's Sea",
+    coords: [(6061, 2990), (6154, 3033)],
+    link: "https://malazan.fandom.com/wiki/Pirate's_Sea"
+  },
+  {
+    name: "Korelri",
+    coords: [(5427, 3320), (5524, 3335)],
+    link: "https://malazan.fandom.com/wiki/Korelri"
+  },
+  {
+    name: "Screaming Range",
+    coords: [(5424, 3352), (5523, 3383)],
+    link: "https://malazan.fandom.com/wiki/Screaming_Range"
+  },
+  {
+    name: "Storm",
+    coords: [(5553, 3283)],
+    link: "https://malazan.fandom.com/wiki/Storm"
+  },
+  {
+    name: "Shelter",
+    coords: [(5615, 3284)],
+    link: "https://malazan.fandom.com/wiki/Shelter"
+  },
+  {
+    name: "Dead shore Stormwall",
+    coords: [(5555, 3154), (5699, 3206)],
+    link: "https://malazan.fandom.com/wiki/Dead_Shore"
+  },
+  {
+    name: "Elri",
+    coords: [(5679, 3231)],
+    link: "https://malazan.fandom.com/wiki/Elri"
+  },
+  {
+    name: "Crack Strait",
+    coords: [(5650, 3246), (5752, 3303)],
+    link: "https://malazan.fandom.com/wiki/Crack_Strait"
+  },
+  {
+    name: "Kor",
+    coords: [(5745, 3159)],
+    link: "https://malazan.fandom.com/wiki/Kor"
+  },
+  {
+    name: "Barrier Range",
+    coords: [(5668, 3085), (5738, 3117)],
+    link: "https://malazan.fandom.com/wiki/Barrier_Range"
+  },
+  {
+    name: "Katakan",
+    coords: [(5668, 3000), (5775, 3013)],
+    link: "https://malazan.fandom.com/wiki/Katakan"
+  },
+  {
+    name: "Narrows",
+    coords: [(5801, 3138), (5869, 3174)],
+    link: "https://malazan.fandom.com/wiki/Narrows"
+  },
+  {
+    name: "Bali",
+    coords: [(5813, 3124)],
+    link: "https://malazan.fandom.com/wiki/Bali"
+  },
+  {
+    name: "Xixr",
+    coords: [(5792, 3083)],
+    link: "https://malazan.fandom.com/wiki/Xixr"
+  },
+  {
+    name: "Blood Isthmus",
+    coords: [(5773, 3020), (5849, 3048)],
+    link: "https://malazan.fandom.com/wiki/Blood_Isthmus"
+  },
+  {
+    name: "Poon",
+    coords: [(5860, 3092)],
+    link: "https://malazan.fandom.com/wiki/Poon"
+  },
+  {
+    name: "Molz",
+    coords: [(5925, 3063)],
+    link: "https://malazan.fandom.com/wiki/Molz"
+  },
+  {
+    name: "Danig",
+    coords: [(5946, 3057)],
+    link: "https://malazan.fandom.com/wiki/Danig"
+  },
+  {
+    name: "Stall",
+    coords: [(5975, 3048)],
+    link: "https://malazan.fandom.com/wiki/Stall_(Stormguard)"
+  },
+  {
+    name: "Filk",
+    coords: [(5988, 3020)],
+    link: "https://malazan.fandom.com/wiki/Filk"
+  },
+  {
+    name: "Rip",
+    coords: [(6005, 3002)],
+    link: "https://malazan.fandom.com/wiki/Rip"
+  },
+  {
+    name: "Lamentable Moll",
+    coords: [(6028, 2965)],
+    link: "https://malazan.fandom.com/wiki/Lamentable_Moll"
+  },
+  {
+    name: "Steel",
+    coords: [(6069, 2946)],
+    link: "https://malazan.fandom.com/wiki/Steel"
+  },
+  {
+    name: "Grest",
+    coords: [(6095, 2889)],
+    link: "https://malazan.fandom.com/wiki/Grest"
+  },
+  {
+    name: "Theft",
+    coords: [(6009, 2912), (6072, 2934)],
+    link: "https://malazan.fandom.com/wiki/Theft"
+  },
+  {
+    name: "Storin Cut",
+    coords: [(5891, 2905), (5988, 2943)],
+    link: "https://malazan.fandom.com/wiki/Storin_Cut"
+  },
+  {
+    name: "Storin Reef",
+    coords: [(5816, 2828), (5873, 2951)],
+    link: "https://malazan.fandom.com/wiki/Storin_Reef"
+  },
+  {
+    name: "Stratem",
+    coords: [(5778, 3883), (6085, 3928)],
+    link: "https://malazan.fandom.com/wiki/Stratem"
+  },
+  {
+    name: "Pine Fort",
+    coords: [(5462, 3780)],
+    link: "https://malazan.fandom.com/wiki/Pine_Fort"
+  },
+  {
+    name: "Canton's Landing",
+    coords: [(5465, 3895)],
+    link: "https://malazan.fandom.com/wiki/Canton's_Landing"
+  },
+  {
+    name: "North Bastion",
+    coords: [(5661, 3958)],
+    link: "https://malazan.fandom.com/wiki/North_Bastion"
+  },
+  {
+    name: "Haven Provice (Crimson Guard Territory)",
+    coords: [(5699, 4222), (6005, 4335)],
+    link: "https://malazan.fandom.com/wiki/Haven_Province"
+  },
+  {
+    name: "Iron Citadel",
+    coords: [(5943, 4412)],
+    link: "https://malazan.fandom.com/wiki/Iron_Citadel"
+  },
+  {
+    name: "Thickton",
+    coords: [(5906, 4048)],
+    link: "https://malazan.fandom.com/wiki/Thickton"
+  },
+  {
+    name: "Quillon",
+    coords: [(5855, 4058)],
+    link: "https://malazan.fandom.com/wiki/Quillon"
+  },
+  {
+    name: "Sea of Chimes",
+    coords: [(5996, 4097), (6216, 4120)],
+    link: "https://malazan.fandom.com/wiki/Sea_of_Chimes"
+  },
+  {
+    name: "Toll's City",
+    coords: [(6519, 3825)],
+    link: "https://malazan.fandom.com/wiki/Toll's_City"
+  },
+  {
+    name: "Toll's Landing",
+    coords: [(6550, 3845)],
+    link: "https://malazan.fandom.com/wiki/Toll's_Landing"
+  },
+  {
+    name: "Thick",
+    coords: [(6350, 4120)],
+    link: "https://malazan.fandom.com/wiki/Thick"
+  },
+  {
+    name: "Cape of the Stone Army",
+    coords: [(6383, 4114), (6681, 4131)],
+    link: "https://malazan.fandom.com/wiki/Cape_of_the_Stone_Army"
+  },
+  {
+    name: "Ice Island Sea",
+    coords: [(6551, 3651), (6778, 3672)],
+    link: "https://malazan.fandom.com/wiki/Ice_Island_Sea"
+  },
+  {
+    name: "Assail",
+    coords: [(7928, 2623), (8162, 2668)],
+    link: "https://malazan.fandom.com/wiki/Assail"
+  },
+  {
+    name: "Barren Coast",
+    coords: [(7192, 2552), (7314, 2592)],
+    link: "https://malazan.fandom.com/wiki/Barren_Coast"
+  },
+  {
+    name: "Plain of Ghosts",
+    coords: [(7276, 2663), (7379, 2700)],
+    link: "https://malazan.fandom.com/wiki/Plain_of_Ghosts"
+  },
+  {
+    name: "Fallen (Taken)",
+    coords: [(7436, 2623)],
+    link: "https://malazan.fandom.com/wiki/Fallen"
+  },
+  {
+    name: "Plain of Visions",
+    coords: [(7460, 2575), (7557, 2615)],
+    link: "https://malazan.fandom.com/wiki/Plain_of_Visions"
+  },
+  {
+    name: "Blood Range",
+    coords: [(7521, 2684), (7582, 2713)],
+    link: "https://malazan.fandom.com/wiki/Blood_Range"
+  },
+  {
+    name: "Salt Mountains",
+    coords: [(7565, 2622), (7664, 2636)],
+    link: "https://malazan.fandom.com/wiki/Salt_Mountains"
+  },
+  {
+    name: "Reach",
+    coords: [(7627, 2731)],
+    link: "https://malazan.fandom.com/wiki/Reach"
+  },
+  {
+    name: "Mantle",
+    coords: [(7653, 2696)],
+    link: "https://malazan.fandom.com/wiki/Mantle"
+  },
+  {
+    name: "Plain of Sighs",
+    coords: [(7616, 2571), (7720, 2613)],
+    link: "https://malazan.fandom.com/wiki/Plain_of_Sighs"
+  },
+  {
+    name: "Wrack Coast",
+    coords: [(7692, 2501), (7817, 2520)],
+    link: "https://malazan.fandom.com/wiki/Wrack_Coast"
+  },
+  {
+    name: "Dreaming Range",
+    coords: [(7739, 2579), (7888, 2597)],
+    link: "https://malazan.fandom.com/wiki/Dreaming_Range"
+  },
+  {
+    name: "Plain of Longing",
+    coords: [(7760, 2623), (7908, 2652)],
+    link: "https://malazan.fandom.com/wiki/Plain_of_Longing"
+  },
+  {
+    name: "First Landing",
+    coords: [(7711, 2704)],
+    link: "https://malazan.fandom.com/wiki/First_Landing"
+  },
+  {
+    name: "Sea of Gold",
+    coords: [(7635, 2712), (7700, 2746)],
+    link: "https://malazan.fandom.com/wiki/Sea_of_Gold"
+  },
+  {
+    name: "City of Many Saints",
+    coords: [(7669, 2769)],
+    link: "https://malazan.fandom.com/wiki/City_of_Many_Saints"
+  },
+  {
+    name: "Plain of Chance",
+    coords: [(7747, 2796), (7819, 2826)],
+    link: "https://malazan.fandom.com/wiki/Plain_of_Chance"
+  },
+  {
+    name: "Holly",
+    coords: [(7714, 2849)],
+    link: "https://malazan.fandom.com/wiki/Holly"
+  },
+  {
+    name: "Bone Range",
+    coords: [(7642, 2800), (7687, 2889)],
+    link: "https://malazan.fandom.com/wiki/Bone_Range"
+  },
+  {
+    name: "Rough Landing",
+    coords: [(7684, 2915)],
+    link: "https://malazan.fandom.com/wiki/Rough_Landing"
+  },
+  {
+    name: "Bones",
+    coords: [(7732, 2977)],
+    link: "https://malazan.fandom.com/wiki/Bones"
+  },
+  {
+    name: "Old Ruse",
+    coords: [(7713, 3077)],
+    link: "https://malazan.fandom.com/wiki/Old_Ruse"
+  },
+  {
+    name: "North",
+    coords: [(7641, 2989)],
+    link: "https://malazan.fandom.com/wiki/North"
+  },
+  {
+    name: "Vanishing Wastes",
+    coords: [(7339, 2782), (7559, 2800)],
+    link: "https://malazan.fandom.com/wiki/Vanishing_Wastes"
+  },
+  {
+    name: "Mist",
+    coords: [(7586, 2855)],
+    link: "https://malazan.fandom.com/wiki/Mist"
+  },
+  {
+    name: "Range of the Saints",
+    coords: [(7341, 2879), (7361, 3071)],
+    link: "https://malazan.fandom.com/wiki/Range_of_the_Saints"
+  },
+  {
+    name: "Mist",
+    coords: [(7586, 2855)],
+    link: "https://malazan.fandom.com/wiki/Mist"
+  },
+  {
+    name: "Anguish Coast",
+    coords: [(7495, 2910), (7511, 3043)],
+    link: "https://malazan.fandom.com/wiki/Anguish_Coast"
+  },
+  {
+    name: "Dread Sea",
+    coords: [(7529, 3013), (7624, 3066)],
+    link: "https://malazan.fandom.com/wiki/Dread_Sea"
+  },
+  {
+    name: "Exile Keep",
+    coords: [(7553, 3102)],
+    link: "https://malazan.fandom.com/wiki/Exile_Keep"
+  },
+  {
+    name: "Lake Fort",
+    coords: [(7481, 3161)],
+    link: "https://malazan.fandom.com/wiki/Lake_Fort"
+  },
+  {
+    name: "Lake Blessing",
+    coords: [(7427, 3192), (7559, 3206)],
+    link: "https://malazan.fandom.com/wiki/Lake_Blessing"
+  },
+  {
+    name: "Shifting Wastes",
+    coords: [(7565, 3166), (7671, 3210)],
+    link: "https://malazan.fandom.com/wiki/Shifting_Wastes"
+  },
+  {
+    name: "Coast of Dust",
+    coords: [(7579, 3106), (7704, 3125)],
+    link: "https://malazan.fandom.com/wiki/Coast_of_Dust"
+  },
+  {
+    name: "Fear Narrows",
+    coords: [(7729, 3062), (7805, 3112)],
+    link: "https://malazan.fandom.com/wiki/Fear_Narrows"
+  },
+  {
+    name: "Run",
+    coords: [(7845, 3032)],
+    link: "https://malazan.fandom.com/wiki/Run"
+  },
+  {
+    name: "Burnt",
+    coords: [(7874, 3016)],
+    link: "https://malazan.fandom.com/wiki/Burnt"
+  },
+  {
+    name: "Deep Root",
+    coords: [(7866, 3046)],
+    link: "https://malazan.fandom.com/wiki/Deep_Root"
+  },
+  {
+    name: "Wrecker's Coast",
+    coords: [(7803, 2936), (8016, 2960)],
+    link: "https://malazan.fandom.com/wiki/Wrecker's_Coast"
+  },
+  {
+    name: "Pillar",
+    coords: [(7901, 2962)],
+    link: "https://malazan.fandom.com/wiki/Pillar"
+  },
+  {
+    name: "Widden",
+    coords: [(7960, 3000)],
+    link: "https://malazan.fandom.com/wiki/Widden"
+  },
+  {
+    name: "Talon Forest",
+    coords: [(7857, 3071), (7953, 3131)],
+    link: "https://malazan.fandom.com/wiki/Talon_Forest"
+  },
+  {
+    name: "Listell",
+    coords: [(7877, 3140)],
+    link: "https://malazan.fandom.com/wiki/Listell"
+  },
+  {
+    name: "Shore of Sand",
+    coords: [(7489, 3253), (7628, 3284)],
+    link: "https://malazan.fandom.com/wiki/Shore_of_Sand"
+  },
+  {
+    name: "Black Sea",
+    coords: [(7524, 3299), (7619, 3313)],
+    link: "https://malazan.fandom.com/wiki/Black_Sea"
+  },
+  {
+    name: "Shore of Stone",
+    coords: [(7548, 3326), (7674, 3367)],
+    link: "https://malazan.fandom.com/wiki/Shore_of_Stone"
+  },
+  {
+    name: "Yag'quarall (Silent Tribes)",
+    coords: [(7290, 3241), (7448, 3288)],
+    link: "https://malazan.fandom.com/wiki/Silent_People"
+  },
+  {
+    name: "Bael",
+    coords: [(7440, 3738), (7618, 3787)],
+    link: "https://malazan.fandom.com/wiki/Bael"
+  },
+  {
+    name: "Weeping Plains",
+    coords: [(7385, 3462), (7580, 3483)],
+    link: "https://malazan.fandom.com/wiki/Weeping_Plains"
+  },
+  {
+    name: "Yaguran (Sons of Wind)",
+    coords: [(7324, 3557), (7481, 3599)],
+    link: "https://malazan.fandom.com/wiki/Yaguran"
+  },
+  {
+    name: "Nabraji",
+    coords: [(7662, 3446)],
+    link: "https://malazan.fandom.com/wiki/Nabraji"
+  },
+  {
+    name: "Kurzan",
+    coords: [(7753, 3437)],
+    link: "https://malazan.fandom.com/wiki/Kurzan"
+  },
+  {
+    name: "White Cliffs",
+    coords: [(7777, 3400), (7869, 3470)],
+    link: "https://malazan.fandom.com/wiki/White_Cliffs"
+  },
+  {
+    name: "Towerpoint",
+    coords: [(7885, 3316)],
+    link: "https://malazan.fandom.com/wiki/Towerpoint"
+  },
+  {
+    name: "Quon Tali",
+    coords: [(4671, 2296), (5028, 2339)],
+    link: "https://malazan.fandom.com/wiki/Quon_Tali"
+  },
+  {
+    name: "Falar",
+    coords: [(5533, 1812), (5750, 1859)],
+    link: "https://malazan.fandom.com/wiki/Falar"
+  },
+  {
+    name: "Bantra",
+    coords: [(5474, 1770)],
+    link: "https://malazan.fandom.com/wiki/Bantra"
+  },
+  {
+    name: "Walk Sea",
+    coords: [(5452, 1932), (5528, 1984)],
+    link: "https://malazan.fandom.com/wiki/Walk_Sea"
+  },
+  {
+    name: "Walk",
+    coords: [(5416, 2023)],
+    link: "https://malazan.fandom.com/wiki/Walk"
+  },
+  {
+    name: "Strom Sea",
+    coords: [(5271, 2121), (5433, 2140)],
+    link: "https://malazan.fandom.com/wiki/Strom_Sea"
+  },
+  {
+    name: "Falari Isles",
+    coords: [(5118, 1928), (5306, 1949)],
+    link: "https://malazan.fandom.com/wiki/Falari_Isles"
+  },
+  {
+    name: "Cragg Sea",
+    coords: [(5067, 1844), (5232, 1864)],
+    link: "https://malazan.fandom.com/wiki/Cragg_Sea"
+  },
+  {
+    name: "Cabil",
+    coords: [(5172, 2065)],
+    link: "https://malazan.fandom.com/wiki/Cabil"
+  },
+  {
+    name: "Falair",
+    coords: [(5120, 2074)],
+    link: "https://malazan.fandom.com/wiki/Falair"
+  },
+  {
+    name: "Belade",
+    coords: [(5197, 2111)],
+    link: "https://malazan.fandom.com/wiki/Belade"
+  },
+  {
+    name: "Falar Peninsula",
+    coords: [(4896, 2098), (5019, 2135)],
+    link: "https://malazan.fandom.com/wiki/Falar"
+  },
+  {
+    name: "Walk Sea",
+    coords: [(5449, 1934), (5528, 1983)],
+    link: "https://malazan.fandom.com/wiki/Walk_Sea"
+  },
+  {
+    name: "Belid",
+    coords: [(5573, 2098)],
+    link: "https://malazan.fandom.com/wiki/Belid"
+  },
+  {
+    name: "Strike Island",
+    coords: [(5694, 2056), (5782, 2097)],
+    link: "https://malazan.fandom.com/wiki/Strike_Island"
+  },
+  {
+    name: "Strike",
+    coords: [(5628, 2109)],
+    link: "https://malazan.fandom.com/wiki/Strike"
+  },
+  {
+    name: "Delanss",
+    coords: [(5467, 2203)],
+    link: "https://malazan.fandom.com/wiki/Delanss"
+  },
+  {
+    name: "Delanss Island",
+    coords: [(5530, 2250), (5635, 2289)],
+    link: "https://malazan.fandom.com/wiki/Delanss_Island"
+  },
+  {
+    name: "Falari Sea",
+    coords: [(5583, 2185), (5681, 2237)],
+    link: "https://malazan.fandom.com/wiki/Falari_Sea"
+  },
+  {
+    name: "Colonnus Sea",
+    coords: [(5373, 2313), (5489, 2337)],
+    link: "https://malazan.fandom.com/wiki/Colonnus_Sea"
+  },
+  {
+    name: "Great Fenn Range",
+    coords: [(5038, 2366), (5264, 2381)],
+    link: "https://malazan.fandom.com/wiki/Great_Fenn_Range"
+  },
+  {
+    name: "The Citadel",
+    coords: [(5321, 2395)],
+    link: "https://malazan.fandom.com/wiki/Red_Fort"
+  },
+  {
+    name: "Voron",
+    coords: [(5423, 2418)],
+    link: "https://malazan.fandom.com/wiki/Voron"
+  },
+  {
+    name: "Wickan Plains",
+    coords: [(5458, 2346), (5634, 2364)],
+    link: "https://malazan.fandom.com/wiki/Wickan_Plains"
+  },
+  {
+    name: "Baran",
+    coords: [(5576, 2430)],
+    link: "https://malazan.fandom.com/wiki/Baran_(city)"
+  },
+  {
+    name: "D'avig",
+    coords: [(5507, 2452)],
+    link: "https://malazan.fandom.com/wiki/D'Avig"
+  },
+  {
+    name: "Athrans",
+    coords: [(5456, 2491)],
+    link: "https://malazan.fandom.com/wiki/Athrans"
+  },
+  {
+    name: "Thades",
+    coords: [(5439, 2516)],
+    link: "https://malazan.fandom.com/wiki/Thades"
+  },
+  {
+    name: "Rath",
+    coords: [(5382, 2521)],
+    link: "https://malazan.fandom.com/wiki/Rath"
+  },
+  {
+    name: "Thade",
+    coords: [(5432, 2548)],
+    link: "https://malazan.fandom.com/wiki/Thade"
+  },
+  {
+    name: "Bloor",
+    coords: [(5416, 2583)],
+    link: "https://malazan.fandom.com/wiki/Bloor"
+  },
+  {
+    name: "Gris",
+    coords: [(5616, 2539)],
+    link: "https://malazan.fandom.com/wiki/Gris"
+  },
+  {
+    name: "Unta",
+    coords: [(5572, 2580)],
+    link: "https://malazan.fandom.com/wiki/Unta"
+  },
+  {
+    name: "Kartool Island",
+    coords: [(5665, 2618), (5865, 2636)],
+    link: "https://malazan.fandom.com/wiki/Kartool_Island"
+  },
+  {
+    name: "Kartool",
+    coords: [(5713, 2660)],
+    link: "https://malazan.fandom.com/wiki/Kartool"
+  },
+  {
+    name: "Bloor Sea",
+    coords: [(5416, 2581)],
+    link: "https://malazan.fandom.com/wiki/Bloor_Sea"
+  },
+  {
+    name: "Malaz Isle",
+    coords: [(5524, 2867), (5605, 2909)],
+    link: "https://malazan.fandom.com/wiki/Malaz_Isle"
+  },
+  {
+    name: "Jakata",
+    coords: [(5574, 2846)],
+    link: "https://malazan.fandom.com/wiki/Jakata"
+  },
+  {
+    name: "Malaz City",
+    coords: [(5616, 2835)],
+    link: "https://malazan.fandom.com/wiki/Malaz_City"
+  },
+  {
+    name: "Aythan",
+    coords: [(5493, 2683)],
+    link: "https://malazan.fandom.com/wiki/Aythan"
+  },
+  {
+    name: "Carasin",
+    coords: [(5479, 2706)],
+    link: "https://malazan.fandom.com/wiki/Carasin"
+  },
+  {
+    name: "Vor",
+    coords: [(5446, 2704)],
+    link: "https://malazan.fandom.com/wiki/Vor"
+  },
+  {
+    name: "Marl",
+    coords: [(5375, 2682)],
+    link: "https://malazan.fandom.com/wiki/Marl"
+  },
+  {
+    name: "Nap Sea",
+    coords: [(5330, 2710), (5426, 2727)],
+    link: "https://malazan.fandom.com/wiki/Nap_Sea"
+  },
+  {
+    name: "Napan Isles",
+    coords: [(5419, 2739), (5494, 2783)],
+    link: "https://malazan.fandom.com/wiki/Napan_Isles"
+  },
+  {
+    name: "Dariyal",
+    coords: [(5392, 2771)],
+    link: "https://malazan.fandom.com/wiki/Dariyal"
+  },
+  {
+    name: "Forest Fenn",
+    coords: [(5150, 2436), (5308, 2453)],
+    link: "https://malazan.fandom.com/wiki/Forest_Fenn"
+  },
+  {
+    name: "Purage",
+    coords: [(4982, 2511)],
+    link: "https://malazan.fandom.com/wiki/Purage"
+  },
+  {
+    name: "Tellick",
+    coords: [(4989, 2537)],
+    link: "https://malazan.fandom.com/wiki/Tellick"
+  },
+  {
+    name: "Quon & Tali",
+    coords: [(4988, 2559)],
+    link: "https://malazan.fandom.com/wiki/Quon_Tali"
+  },
+  {
+    name: "Attic",
+    coords: [(4963, 2586)],
+    link: "https://malazan.fandom.com/wiki/Attic"
+  },
+  {
+    name: "Panys",
+    coords: [(4941, 2603)],
+    link: "https://malazan.fandom.com/wiki/Panys"
+  },
+  {
+    name: "Ebond",
+    coords: [(4943, 2553)],
+    link: "https://malazan.fandom.com/wiki/Ebond"
+  },
+  {
+    name: "Valan",
+    coords: [(4937, 2527)],
+    link: "https://malazan.fandom.com/wiki/Valan"
+  },
+  {
+    name: "Korn",
+    coords: [(4915, 2587)],
+    link: "https://malazan.fandom.com/wiki/Korn"
+  },
+  {
+    name: "Arath",
+    coords: [(4914, 2655)],
+    link: "https://malazan.fandom.com/wiki/Arath"
+  },
+  {
+    name: "Garal",
+    coords: [(4988, 2658)],
+    link: "https://malazan.fandom.com/wiki/Garal"
+  },
+  {
+    name: "Aireck",
+    coords: [(5010, 2628)],
+    link: "https://malazan.fandom.com/wiki/Aireck"
+  },
+  {
+    name: "Bastial",
+    coords: [(5049, 2639)],
+    link: "https://malazan.fandom.com/wiki/Bastial"
+  },
+  {
+    name: "Nadir",
+    coords: [(5049, 2608)],
+    link: "https://malazan.fandom.com/wiki/Nadir"
+  },
+  {
+    name: "Seti",
+    coords: [(5106, 2583)],
+    link: "https://malazan.fandom.com/wiki/Seti"
+  },
+  {
+    name: "New Seti",
+    coords: [(5200, 2535)],
+    link: "https://malazan.fandom.com/wiki/New_Seti"
+  },
+  {
+    name: "Idryb",
+    coords: [(5263, 2637)],
+    link: "https://malazan.fandom.com/wiki/Idryb"
+  },
+  {
+    name: "Cawn",
+    coords: [(5311, 2630)],
+    link: "https://malazan.fandom.com/wiki/Cawn"
+  },
+  {
+    name: "Aska",
+    coords: [(5322, 2664)],
+    link: "https://malazan.fandom.com/wiki/Aska"
+  },
+  {
+    name: "Li Heng",
+    coords: [(5211, 2666)],
+    link: "https://malazan.fandom.com/wiki/Li_Heng"
+  },
+  {
+    name: "Ijor",
+    coords: [(5255, 2735)],
+    link: "https://malazan.fandom.com/wiki/Ijor"
+  },
+  {
+    name: "Nex",
+    coords: [(5227, 2757)],
+    link: "https://malazan.fandom.com/wiki/Nex"
+  },
+  {
+    name: "Dal Hon Plains",
+    coords: [(5016, 2708), (5204, 2726)],
+    link: "https://malazan.fandom.com/wiki/Dal_Hon_Plains"
+  },
+  {
+    name: "Itko Kan",
+    coords: [(5292, 2761)],
+    link: "https://malazan.fandom.com/wiki/Itko_Kan"
+  },
+  {
+    name: "Wal Fend",
+    coords: [(5257, 2839)],
+    link: "https://malazan.fandom.com/wiki/Wal_Fend"
+  },
+  {
+    name: "Horan",
+    coords: [(5203, 2816)],
+    link: "https://malazan.fandom.com/wiki/Horan"
+  },
+  {
+    name: "Forest Horn",
+    coords: [(4960, 2809), (5124, 2828)],
+    link: "https://malazan.fandom.com/wiki/Forest_Horn"
+  },
+  {
+    name: "Genii",
+    coords: [(5243, 2944), (5311, 2960)],
+    link: "https://malazan.fandom.com/wiki/Genii_Straits"
+  },
+  {
+    name: "Drift Avalii",
+    coords: [(4765, 2934), (4843, 2980)],
+    link: "https://malazan.fandom.com/wiki/Drift_Avalii"
+  },
+  {
+    name: "Genabackis",
+    coords: [(7097, 1404), (7532, 1451)],
+    link: "https://malazan.fandom.com/wiki/Genabackis"
+  },
+  {
+    name: "Hudd Sea",
+    coords: [(6936, 617), (7086, 638)],
+    link: "https://malazan.fandom.com/wiki/Hudd_Sea"
+  },
+  {
+    name: "Tobla Tundra",
+    coords: [(6731, 757), (6874, 772)],
+    link: "https://malazan.fandom.com/wiki/Toblai_Tundra"
+  },
+  {
+    name: "Laederon Plateau",
+    coords: [(6790, 783), (6885, 815)],
+    link: "https://malazan.fandom.com/wiki/Laederon_Plateau"
+  },
+  {
+    name: "Northwind Tundra",
+    coords: [(6945, 801), (7032, 844)],
+    link: "https://malazan.fandom.com/wiki/Northwind_Tundra"
+  },
+  {
+    name: "Ganiss",
+    coords: [(7097, 810)],
+    link: "https://malazan.fandom.com/wiki/Ganiss"
+  },
+  {
+    name: "Hoop",
+    coords: [(7212, 797)],
+    link: "https://malazan.fandom.com/wiki/Hoop"
+  },
+  {
+    name: "Horan",
+    coords: [(7321, 788)],
+    link: "https://malazan.fandom.com/wiki/Horan"
+  },
+  {
+    name: "Genabaris",
+    coords: [(6721, 877)],
+    link: "https://malazan.fandom.com/wiki/Genabaris"
+  },
+  {
+    name: "Prospect",
+    coords: [(6719, 940)],
+    link: "https://malazan.fandom.com/wiki/Prospect"
+  },
+  {
+    name: "Grinning Face Range",
+    coords: [(6840, 937), (6943, 984)],
+    link: "https://malazan.fandom.com/wiki/Grinning_Face_Range"
+  },
+  {
+    name: "Bettrys",
+    coords: [(6829, 916)],
+    link: "https://malazan.fandom.com/wiki/Bettrys"
+  },
+  {
+    name: "Blued",
+    coords: [(6901, 913)],
+    link: "https://malazan.fandom.com/wiki/Blued"
+  },
+  {
+    name: "Prospect",
+    coords: [(6718, 941)],
+    link: "https://malazan.fandom.com/wiki/Prospect"
+  },
+  {
+    name: "Mott",
+    coords: [(6770, 973)],
+    link: "https://malazan.fandom.com/wiki/Mott"
+  },
+  {
+    name: "Greydog",
+    coords: [(6826, 966)],
+    link: "https://malazan.fandom.com/wiki/Greydog"
+  },
+  {
+    name: "Owndos Sea",
+    coords: [(6887, 923), (6942, 948)],
+    link: "https://malazan.fandom.com/wiki/Owndos_Sea"
+  },
+  {
+    name: "Culvern",
+    coords: [(6910, 853)],
+    link: "https://malazan.fandom.com/wiki/Culvern"
+  },
+  {
+    name: "Owndos",
+    coords: [(6955, 939)],
+    link: "https://malazan.fandom.com/wiki/Owndos"
+  },
+  {
+    name: "Tarthen Range",
+    coords: [(6977, 886), (7043, 927)],
+    link: "https://malazan.fandom.com/wiki/Tarthen_Range"
+  },
+  {
+    name: "Genalle",
+    coords: [(7089, 900)],
+    link: "https://malazan.fandom.com/wiki/Genalle"
+  },
+  {
+    name: "Free City Plain",
+    coords: [(7121, 849), (7232, 893)],
+    link: "https://malazan.fandom.com/wiki/Free_City_Plain"
+  },
+  {
+    name: "Apple",
+    coords: [(7267, 958)],
+    link: "https://malazan.fandom.com/wiki/Apple"
+  },
+  {
+    name: "Nathilog",
+    coords: [(6669, 967)],
+    link: "https://malazan.fandom.com/wiki/Nathilog"
+  },
+  {
+    name: "Ayjhan",
+    coords: [(6651, 1001)],
+    link: "https://malazan.fandom.com/wiki/Ayjhan"
+  },
+  {
+    name: "Tulips",
+    coords: [(6629, 1042)],
+    link: "https://malazan.fandom.com/wiki/Tulips"
+  },
+  {
+    name: "Blackdog Forest",
+    coords: [(6678, 1032), (6768, 1063)],
+    link: "https://malazan.fandom.com/wiki/Blackdog_Forest"
+  },
+  {
+    name: "Bodd",
+    coords: [(6920, 1010)],
+    link: "https://malazan.fandom.com/wiki/Bodd"
+  },
+  {
+    name: "Bear",
+    coords: [(6898, 1115)],
+    link: "https://malazan.fandom.com/wiki/Bear"
+  },
+  {
+    name: "Patch",
+    coords: [(6883, 1167)],
+    link: "https://malazan.fandom.com/wiki/Patch"
+  },
+  {
+    name: "One Eye Cat",
+    coords: [(6951, 1044)],
+    link: "https://malazan.fandom.com/wiki/One_Eye_Cat"
+  },
+  {
+    name: "One Eye Range",
+    coords: [(7022, 1054), (7144, 1077)],
+    link: "https://malazan.fandom.com/wiki/One_Eye_Range"
+  },
+  {
+    name: "Abor",
+    coords: [(7017, 1009)],
+    link: "https://malazan.fandom.com/wiki/Abor_(Genabackis)"
+  },
+  {
+    name: "Sogena",
+    coords: [(7067, 991)],
+    link: "https://malazan.fandom.com/wiki/Sogena"
+  },
+  {
+    name: "Old King Plateau",
+    coords: [(6952, 1095), (7058, 1134)],
+    link: "https://malazan.fandom.com/wiki/Old_King_Plateau"
+  },
+  {
+    name: "Cat",
+    coords: [(6948, 1128)],
+    link: "https://malazan.fandom.com/wiki/Cat"
+  },
+  {
+    name: "Lead",
+    coords: [(6965, 1165)],
+    link: "https://malazan.fandom.com/wiki/Lead"
+  },
+  {
+    name: "Lead Sea",
+    coords: [(6974, 1177), (7019, 1206)],
+    link: "https://malazan.fandom.com/wiki/Lead_Sea"
+  },
+  {
+    name: "Cruk",
+    coords: [(7056, 1144)],
+    link: "https://malazan.fandom.com/wiki/Cruk"
+  },
+  {
+    name: "Stannis Plain",
+    coords: [(7161, 1006), (7219, 1080)],
+    link: "https://malazan.fandom.com/wiki/Stannis_Plain"
+  },
+  {
+    name: "Anklos",
+    coords: [(7146, 1176)],
+    link: "https://malazan.fandom.com/wiki/Anklos"
+  },
+  {
+    name: "Shand",
+    coords: [(7291, 1144)],
+    link: "https://malazan.fandom.com/wiki/Shand_(city)"
+  },
+  {
+    name: "Crest",
+    coords: [(7283, 1057)],
+    link: "https://malazan.fandom.com/wiki/Crest"
+  },
+  {
+    name: "Harbinger Peninsula",
+    coords: [(7358, 1042), (7490, 1087)],
+    link: "https://malazan.fandom.com/wiki/Harbinger_Peninsula"
+  },
+  {
+    name: "Oach",
+    coords: [(6579, 1182)],
+    link: "https://malazan.fandom.com/wiki/Oach"
+  },
+  {
+    name: "Mistral Plateau",
+    coords: [(6580, 1202), (6658, 1233)],
+    link: "https://malazan.fandom.com/wiki/Mistral_Plateau"
+  },
+  {
+    name: "Rhivi Plain",
+    coords: [(6744, 1218), (6879, 1237)],
+    link: "https://malazan.fandom.com/wiki/Rhivi_Plain"
+  },
+  {
+    name: "Greenwater Lake",
+    coords: [(6680, 1246), (6795, 1282)],
+    link: "https://malazan.fandom.com/wiki/Greenwater_Lake"
+  },
+  {
+    name: "Lead Steppes",
+    coords: [(6890, 1257), (7017, 1274)],
+    link: "https://malazan.fandom.com/wiki/Lead_Steppes"
+  },
+  {
+    name: "Bhederin Plateau",
+    coords: [(6874, 1315), (6968, 1348)],
+    link: "https://malazan.fandom.com/wiki/Bhederin_Plateau"
+  },
+  {
+    name: "Sephal Mountains",
+    coords: [(7047, 1210), (7112, 1245)],
+    link: "https://malazan.fandom.com/wiki/Sephal_Mountains"
+  },
+  {
+    name: "Taph",
+    coords: [(7129, 1265)],
+    link: "https://malazan.fandom.com/wiki/Taph"
+  },
+  {
+    name: "Fall Isle",
+    coords: [(7277, 1238), (7330, 1284)],
+    link: "https://malazan.fandom.com/wiki/Fall_Isle"
+  },
+  {
+    name: "Mengal",
+    coords: [(6520, 1399)],
+    link: "https://malazan.fandom.com/wiki/Mengal"
+  },
+  {
+    name: "Moranth Mountains",
+    coords: [(6543, 1335), (6667, 1355)],
+    link: "https://malazan.fandom.com/wiki/Moranth_Mountains"
+  },
+  {
+    name: "Cloud Forest",
+    coords: [(6598, 1361), (6660, 1394)],
+    link: "https://malazan.fandom.com/wiki/Cloud_Forest"
+  },
+  {
+    name: "Pale",
+    coords: [(6749, 1391)],
+    link: "https://malazan.fandom.com/wiki/Pale"
+  },
+  {
+    name: "Tahlyn Mountains",
+    coords: [(6663, 1427), (6836, 1440)],
+    link: "https://malazan.fandom.com/wiki/Tahlyn_Mountains"
+  },
+  {
+    name: "The Divide",
+    coords: [(6857, 1429), (6916, 1460)],
+    link: "https://malazan.fandom.com/wiki/The_Divide"
+  },
+  {
+    name: "Barghast Range",
+    coords: [(7016, 1309), (7074, 1438)],
+    link: "https://malazan.fandom.com/wiki/Barghast_Range"
+  },
+  {
+    name: "Dhavran",
+    coords: [(6677, 1466)],
+    link: "https://malazan.fandom.com/wiki/Dhavran"
+  },
+  {
+    name: "Kurl",
+    coords: [(6664, 1527)],
+    link: "https://malazan.fandom.com/wiki/Kurl"
+  },
+  {
+    name: "Gredfallen",
+    coords: [(6719, 1510)],
+    link: "https://malazan.fandom.com/wiki/Gredfallan"
+  },
+  {
+    name: "Lake Azur",
+    coords: [(6718, 1475), (6826, 1491)],
+    link: "https://malazan.fandom.com/wiki/Lake_Azur"
+  },
+  {
+    name: "Gadrobi Hills",
+    coords: [(6828, 1509), (6907, 1539)],
+    link: "https://malazan.fandom.com/wiki/Gadrobi_Hills"
+  },
+  {
+    name: "Darujhistan",
+    coords: [(6782, 1527)],
+    link: "https://malazan.fandom.com/wiki/Darujhistan"
+  },
+  {
+    name: "Saltoan",
+    coords: [(6974, 1505)],
+    link: "https://malazan.fandom.com/wiki/Saltoan"
+  },
+  {
+    name: "Unta",
+    coords: [5571, 2579],
+    link: "https://malazan.fandom.com/wiki/Unta"
+  },
+  {
+    name: "Vision Mountains",
+    coords: [(6942, 1538), (7054, 1548)],
+    link: "https://malazan.fandom.com/wiki/Vision_Mountains"
+  },
+  {
+    name: "Capustan",
+    coords: [(7101, 1546)],
+    link: "https://malazan.fandom.com/wiki/Capustan"
+  },
+  {
+    name: "Lest",
+    coords: [(7082, 1561)],
+    link: "https://malazan.fandom.com/wiki/Lest"
+  },
+  {
+    name: "Settar",
+    coords: [(7046, 1569)],
+    link: "https://malazan.fandom.com/wiki/Setta"
+  },
+  {
+    name: "Maurik",
+    coords: [(7066, 1617)],
+    link: "https://malazan.fandom.com/wiki/Maurik"
+  },
+  {
+    name: "Coral",
+    coords: [(7065, 1618)],
+    link: "https://malazan.fandom.com/wiki/Coral_(city)"
+  },
+  {
+    name: "Dwelling Plain",
+    coords: [(6690, 1593), (6804, 1636)],
+    link: "https://malazan.fandom.com/wiki/Dwelling_Plain"
+  },
+  {
+    name: "Cinnamon Wastes",
+    coords: [(6836, 1619), (6952, 1661)],
+    link: "https://malazan.fandom.com/wiki/Cinnamon_Wastes"
+  },
+  {
+    name: "Gods Walk Mountains",
+    coords: [(6818, 1678), (6971, 1691)],
+    link: "https://malazan.fandom.com/wiki/Godswalk_Mountains"
+  },
+  {
+    name: "Bastion",
+    coords: [(6869, 1746)],
+    link: "https://malazan.fandom.com/wiki/Bastion"
+  },
+  {
+    name: "Sarn",
+    coords: [(6920, 1750)],
+    link: "https://malazan.fandom.com/wiki/Sarn"
+  },
+  {
+    name: "Pilgrim Lake",
+    coords: [(6971, 1741)],
+    link: "https://malazan.fandom.com/wiki/Pilgrim_Lake"
+  },
+  {
+    name: "Heath",
+    coords: [(7031, 1767)],
+    link: "https://malazan.fandom.com/wiki/Heath_(location)"
+  },
+  {
+    name: "Outlook",
+    coords: [(7041, 1773)],
+    link: "https://malazan.fandom.com/wiki/Outlook"
+  },
+  {
+    name: "Palat Forest",
+    coords: [(7051, 1834), (7111, 1867)],
+    link: "https://malazan.fandom.com/wiki/Palat_Forest"
+  },
+  {
+    name: "The Twins",
+    coords: [(6496, 1948), (6589, 1964)],
+    link: "https://malazan.fandom.com/wiki/The_Twins"
+  },
+  {
+    name: "Callows",
+    coords: [(6638, 1930)],
+    link: "https://malazan.fandom.com/wiki/Callows"
+  },
+  {
+    name: "Plain of Lamatath",
+    coords: [(6813, 1990), (6929, 2032)],
+    link: "https://malazan.fandom.com/wiki/Plain_of_Lamatath"
+  },
+  {
+    name: "Root Forest",
+    coords: [(6680, 2065), (6788, 2135)],
+    link: "https://malazan.fandom.com/wiki/Root_Forest"
+  },
+  {
+    name: "Morn",
+    coords: [(6759, 2186)],
+    link: "https://malazan.fandom.com/wiki/Morn_(location)"
+  },
+  {
+    name: "Cant",
+    coords: [(6610, 2211)],
+    link: "https://malazan.fandom.com/wiki/Cant"
+  },
+  {
+    name: "Isle of the Seguleh",
+    coords: [(6532, 2282), (6671, 2325)],
+    link: "https://malazan.fandom.com/wiki/Isle_of_the_Seguleh"
+  },
+  {
+    name: "Bay of No Harbour",
+    coords: [(7149, 2069), (7257, 2098)],
+    link: "https://malazan.fandom.com/wiki/Bay_of_No_Harbour"
+  },
+  {
+    name: "Ilem",
+    coords: [(7067, 2326)],
+    link: "https://malazan.fandom.com/wiki/Ilem"
+  },
+  {
+    name: "March",
+    coords: [(7135, 2325)],
+    link: "https://malazan.fandom.com/wiki/March"
+  },
+  {
+    name: "North March",
+    coords: [(7138, 2224)],
+    link: "https://malazan.fandom.com/wiki/North_March"
+  },
+  {
+    name: "Hurly",
+    coords: [(7215, 2310)],
+    link: "https://malazan.fandom.com/wiki/Hurly"
+  },
+  {
+    name: "Torn",
+    coords: [(7258, 2302)],
+    link: "https://malazan.fandom.com/wiki/Torn"
+  },
+  {
+    name: "Spendrugle",
+    coords: [(7331, 2285)],
+    link: "https://malazan.fandom.com/wiki/Spendrugle"
+  },
+  {
+    name: "Trygalle",
+    coords: [(7376, 2270)],
+    link: "https://malazan.fandom.com/wiki/Trygalle"
+  },
+  {
+    name: "Cyral",
+    coords: [(7316, 2172)],
+    link: "https://malazan.fandom.com/wiki/Cyral"
+  },
+  {
+    name: "Elingarth",
+    coords: [(7405, 2244)],
+    link: "https://malazan.fandom.com/wiki/Elingarth"
+  },
+  {
+    name: "Rivan Sea",
+    coords: [(7490, 2371), (7636, 2393)],
+    link: "https://malazan.fandom.com/wiki/Rivan_Sea"
+  },
+  {
+    name: "Seven Ruins Island",
+    coords: [(7417, 2412), (7528, 2446)],
+    link: "https://malazan.fandom.com/wiki/Seven_Ruins_Island"
+  },
+  {
+    name: "Erin",
+    coords: [(7455, 2222)],
+    link: "https://malazan.fandom.com/wiki/Erin"
+  },
+  {
+    name: "Kepler's Spite",
+    coords: [(7472, 2056)],
+    link: "https://malazan.fandom.com/wiki/Kepler's_Spite"
+  },
+  {
+    name: "Exile",
+    coords: [(7518, 2145)],
+    link: "https://malazan.fandom.com/wiki/Exile"
+  },
+  {
+    name: "Amat El",
+    coords: [(7536, 2202)],
+    link: "https://malazan.fandom.com/wiki/Amat_El"
+  },
+  {
+    name: "Bluff Point",
+    coords: [(7569, 2167), (7679, 2178)],
+    link: "https://malazan.fandom.com/wiki/Bluff_Point"
+  },
+  {
+    name: "Bounty",
+    coords: [(7576, 2095)],
+    link: "https://malazan.fandom.com/wiki/Bounty"
+  },
+  {
+    name: "Golden",
+    coords: [(7641, 2067)],
+    link: "https://malazan.fandom.com/wiki/Golden"
+  },
+  {
+    name: "Cape Castle",
+    coords: [(7637, 2127), (7751, 2137)],
+    link: "https://malazan.fandom.com/wiki/Cape_Castle"
+  },
+  {
+    name: "Refuge",
+    coords: [(7691, 2032)],
+    link: "https://malazan.fandom.com/wiki/Refuge"
+  },
+  {
+    name: "The Groan",
+    coords: [(7766, 2052), (7867, 2065)],
+    link: "https://malazan.fandom.com/wiki/The_Groan"
+  },
+  {
+    name: "King Call's Isle",
+    coords: [(7818, 2004), (7919, 2037)],
+    link: "https://malazan.fandom.com/wiki/King_Call's_Isle"
+  },
+  {
+    name: "Bad Luck Isle",
+    coords: [(7877, 1943), (7962, 1973)],
+    link: "https://malazan.fandom.com/wiki/Bad_Luck_Isle"
+  },
+  {
+    name: "Wreck Isle",
+    coords: [(7976, 1904), (8036, 1938)],
+    link: "https://malazan.fandom.com/wiki/Wreck_Isle"
+  },
+  {
+    name: "Corpse Isle",
+    coords: [(8049, 1861), (8162, 1874)],
+    link: "https://malazan.fandom.com/wiki/Corpse_Isle"
+  },
+  {
+    name: "Night Ship Islands",
+    coords: [(7839, 1833), (8017, 1898)],
+    link: "https://malazan.fandom.com/wiki/Night_Ship_Islands"
+  },
+  {
+    name: "Galatan Sweep",
+    coords: [(7899, 2040), (8076, 2131)],
+    link: "https://malazan.fandom.com/wiki/Galatan_Sweep"
+  },
+  {
+    name: "Galatan Island",
+    coords: [(7637, 2280), (7738, 2325)],
+    link: "https://malazan.fandom.com/wiki/Galatan_Island"
+  },
+  {
+    name: "New Landing",
+    coords: [(7636, 2264)],
+    link: "https://malazan.fandom.com/wiki/New_Landing"
+  },
+  {
+    name: "Four Towers Ruins",
+    coords: [(7743, 2247)],
+    link: "https://malazan.fandom.com/wiki/Four_Towers_Ruins"
+  },
+  {
+    name: "Seven Cities",
+    coords: [(4816, 718), (5028, 843)],
+    link: "https://malazan.fandom.com/wiki/Seven_Cities"
+  },
+  {
+    name: "Otataral Island",
+    coords: [(5318, 581), (5574, 599)],
+    link: "https://malazan.fandom.com/wiki/Otataral_Island"
+  },
+  {
+    name: "Bandiko Sea",
+    coords: [(5801, 612), (5987, 631)],
+    link: "https://malazan.fandom.com/wiki/Bandiko_Sea"
+  },
+  {
+    name: "Sea of Kaltepe Kadesh",
+    coords: [(5269, 725), (5385, 809)],
+    link: "https://malazan.fandom.com/wiki/Sea_of_Kaltepe_Kadesh"
+  },
+  {
+    name: "Bandiko Desert",
+    coords: [(5476, 707), (5573, 749)],
+    link: "https://malazan.fandom.com/wiki/Bandiko_Desert"
+  },
+  {
+    name: "Talgai Sea",
+    coords: [(5577, 775), (5675, 828)],
+    link: "https://malazan.fandom.com/wiki/Talgai_Sea"
+  },
+  {
+    name: "Karakarang",
+    coords: [(5695, 767)],
+    link: "https://malazan.fandom.com/wiki/Karakarang"
+  },
+  {
+    name: "Rutu Jelba",
+    coords: [(5660, 875)],
+    link: "https://malazan.fandom.com/wiki/Rutu_Jelba"
+  },
+  {
+    name: "Sea of Gallada",
+    coords: [(5794, 835), (5918, 884)],
+    link: "https://malazan.fandom.com/wiki/Sea_of_Gallada"
+  },
+  {
+    name: "Galladi",
+    coords: [(5883, 811)],
+    link: "https://malazan.fandom.com/wiki/Galladi"
+  },
+  {
+    name: "Otataral Sea",
+    coords: [(5476, 954), (5683, 973)],
+    link: "https://malazan.fandom.com/wiki/Otataral_Sea"
+  },
+  {
+    name: "Otataral Desert",
+    coords: [(5729, 998), (5842, 1039)],
+    link: "https://malazan.fandom.com/wiki/Otataral_Desert"
+  },
+  {
+    name: "Tano Hills",
+    coords: [(5818, 933), (5869, 990)],
+    link: "https://malazan.fandom.com/wiki/Tanno_(tribe)"
+  },
+  {
+    name: "Skullcup",
+    coords: [(5766, 1091)],
+    link: "https://malazan.fandom.com/wiki/Skullcup"
+  },
+  {
+    name: "Dosin Pali",
+    coords: [(5726, 1156)],
+    link: "https://malazan.fandom.com/wiki/Dosin_Pali"
+  },
+  {
+    name: "Sahul Sea",
+    coords: [(5700, 1221), (5785, 1276)],
+    link: "https://malazan.fandom.com/wiki/Sahul_Sea"
+  },
+  {
+    name: "Ehrlitan",
+    coords: [(5492, 1067)],
+    link: "https://malazan.fandom.com/wiki/Ehrlitan"
+  },
+  {
+    name: "Arifal Hills",
+    coords: [(5481, 1086), (5590, 1097)],
+    link: "https://malazan.fandom.com/wiki/Arifal"
+  },
+  {
+    name: "Ehrlitan Sea",
+    coords: [(5398, 1037), (5464, 1077)],
+    link: "https://malazan.fandom.com/wiki/Ehrlitan_Sea"
+  },
+  {
+    name: "Karas Sea",
+    coords: [(5451, 1181), (5502, 1208)],
+    link: "https://malazan.fandom.com/wiki/Karas_Sea"
+  },
+  {
+    name: "Halaf",
+    coords: [(5439, 1212)],
+    link: "https://malazan.fandom.com/wiki/Halaf"
+  },
+  {
+    name: "Melm",
+    coords: [(5430, 1243)],
+    link: "https://malazan.fandom.com/wiki/Melm"
+  },
+  {
+    name: "Asmar",
+    coords: [(5417, 1272)],
+    link: "https://malazan.fandom.com/wiki/Asmar"
+  },
+  {
+    name: "Teppes",
+    coords: [(5474, 1298)],
+    link: "https://malazan.fandom.com/wiki/Teppes"
+  },
+  {
+    name: "Ahol Tapur",
+    coords: [(5609, 1088)],
+    link: "https://malazan.fandom.com/wiki/Ahol_Tapur"
+  },
+  {
+    name: "T'nal",
+    coords: [(5544, 1123)],
+    link: "https://malazan.fandom.com/wiki/T'nal"
+  },
+  {
+    name: "Karashimesh",
+    coords: [(5515, 1172)],
+    link: "https://malazan.fandom.com/wiki/Karashimesh"
+  },
+  {
+    name: "Sialk Odhan",
+    coords: [(5560, 1163), (5619, 1193)],
+    link: "https://malazan.fandom.com/wiki/Sialk_Odhan"
+  },
+  {
+    name: "Hissar",
+    coords: [(5670, 1175)],
+    link: "https://malazan.fandom.com/wiki/Hissar"
+  },
+  {
+    name: "Sialk",
+    coords: [(5637, 1196)],
+    link: "https://malazan.fandom.com/wiki/Sialk"
+  },
+  {
+    name: "Caron Tepasi",
+    coords: [(5554, 1209)],
+    link: "https://malazan.fandom.com/wiki/Caron_Tepasi"
+  },
+  {
+    name: "Caron Mountains",
+    coords: [(5518, 1260), (5630, 1274)],
+    link: "https://malazan.fandom.com/wiki/Caron_Mountains"
+  },
+  {
+    name: "Venj",
+    coords: [(5633, 1298)],
+    link: "https://malazan.fandom.com/wiki/Venj"
+  },
+  {
+    name: "Bakun",
+    coords: [(5601, 1338)],
+    link: "https://malazan.fandom.com/wiki/Bakun"
+  },
+  {
+    name: "Jamdat",
+    coords: [(5595, 1378)],
+    link: "https://malazan.fandom.com/wiki/Jamdat"
+  },
+  {
+    name: "Dhebel",
+    coords: [(5626, 1472)],
+    link: "https://malazan.fandom.com/wiki/Dhebel"
+  },
+  {
+    name: "Dhebel Island",
+    coords: [(5701, 1473), (5811, 1526)],
+    link: "https://malazan.fandom.com/wiki/Dhebel"
+  },
+  {
+    name: "Dojal Hading Sea",
+    coords: [(5420, 1377), (5522, 1461)],
+    link: "https://malazan.fandom.com/wiki/Dojal_Hading_Sea"
+  },
+  {
+    name: "Kansu",
+    coords: [(5379, 1027)],
+    link: "https://malazan.fandom.com/wiki/Kansu"
+  },
+  {
+    name: "Raraku",
+    coords: [(5335, 1094), (5435, 1125)],
+    link: "https://malazan.fandom.com/wiki/Raraku"
+  },
+  {
+    name: "G'danisban",
+    coords: [(5426, 1142)],
+    link: "https://malazan.fandom.com/wiki/G'danisban"
+  },
+  {
+    name: "Ubaryd Odhan",
+    coords: [(5304, 1205), (5391, 1245)],
+    link: "https://malazan.fandom.com/wiki/Ubaryd_Odhan"
+  },
+  {
+    name: "Ubaryd",
+    coords: [(5377, 1284)],
+    link: "https://malazan.fandom.com/wiki/Ubaryd"
+  },
+  {
+    name: "Mersin",
+    coords: [(5235, 1193)],
+    link: "https://malazan.fandom.com/wiki/Mersin"
+  },
+  {
+    name: "Enjo Estarb",
+    coords: [(5166, 1068)],
+    link: "https://malazan.fandom.com/wiki/Enjo_Estarb"
+  },
+  {
+    name: "Nevasa",
+    coords: [(5201, 1007)],
+    link: "https://malazan.fandom.com/wiki/Nevasa"
+  },
+  {
+    name: "Noh",
+    coords: [(5251, 987)],
+    link: "https://malazan.fandom.com/wiki/Noh"
+  },
+  {
+    name: "Longshan",
+    coords: [(5298, 1069)],
+    link: "https://malazan.fandom.com/wiki/Longshan"
+  },
+  {
+    name: "Lato Revae",
+    coords: [(5309, 1097)],
+    link: "https://malazan.fandom.com/wiki/Lato_Revae"
+  },
+  {
+    name: "Karokitch",
+    coords: [(5249, 912)],
+    link: "https://malazan.fandom.com/wiki/Karokitch"
+  },
+  {
+    name: "Belbasi",
+    coords: [(5160, 853)],
+    link: "https://malazan.fandom.com/wiki/Belbasi"
+  },
+  {
+    name: "Canhasan",
+    coords: [(5145, 810)],
+    link: "https://malazan.fandom.com/wiki/Canhasan"
+  },
+  {
+    name: "Maadil Sea",
+    coords: [(5055, 916), (5219, 935)],
+    link: "https://malazan.fandom.com/wiki/Maadil_Sea"
+  },
+  {
+    name: "Kaliban",
+    coords: [(5092, 872)],
+    link: "https://malazan.fandom.com/wiki/Kaliban"
+  },
+  {
+    name: "Rang",
+    coords: [(5021, 883)],
+    link: "https://malazan.fandom.com/wiki/Rang"
+  },
+  {
+    name: "Taxila",
+    coords: [(5004, 933)],
+    link: "https://malazan.fandom.com/wiki/Taxila"
+  },
+  {
+    name: "Ashok",
+    coords: [(5018, 990)],
+    link: "https://malazan.fandom.com/wiki/Ashok"
+  },
+  {
+    name: "Lothal",
+    coords: [(5004, 1091)],
+    link: "https://malazan.fandom.com/wiki/Lothal"
+  },
+  {
+    name: "Sotka",
+    coords: [(4956, 1160)],
+    link: "https://malazan.fandom.com/wiki/Sotka"
+  },
+  {
+    name: "Yath Alban",
+    coords: [(4912, 1134)],
+    link: "https://malazan.fandom.com/wiki/Yath_Alban"
+  },
+  {
+    name: "Kokakal Sea",
+    coords: [(4849, 1002), (4971, 1053)],
+    link: "https://malazan.fandom.com/wiki/Kokakal_Sea"
+  },
+  {
+    name: "Olphara Mountains",
+    coords: [(4713, 1116), (4849, 1132)],
+    link: "https://malazan.fandom.com/wiki/Olphara_Mountains"
+  },
+  {
+    name: "Olphara Forest",
+    coords: [(4680, 1204), (4788, 1246)],
+    link: "https://malazan.fandom.com/wiki/Olphara_Forest"
+  },
+  {
+    name: "Jhag Odhan",
+    coords: [(4723, 1364), (4805, 1405)],
+    link: "https://malazan.fandom.com/wiki/Jhag_Odhan"
+  },
+  {
+    name: "Y'Ghatan",
+    coords: [(5044, 1112)],
+    link: "https://malazan.fandom.com/wiki/Y'Ghatan_(city)"
+  },
+  {
+    name: "Kot Ghul",
+    coords: [(5102, 1024)],
+    link: "https://malazan.fandom.com/wiki/Kot_Ghul"
+  },
+  {
+    name: "Hatra",
+    coords: [(5073, 1057)],
+    link: "https://malazan.fandom.com/wiki/Hatra"
+  },
+  {
+    name: "Thalas Mountains",
+    coords: [(5049, 1088), (5167, 1101)],
+    link: "https://malazan.fandom.com/wiki/Thalas_Mountains"
+  },
+  {
+    name: "Ugarat",
+    coords: [(5041, 1210)],
+    link: "https://malazan.fandom.com/wiki/Ugarat"
+  },
+  {
+    name: "Ugarat Odhan",
+    coords: [(5091, 1189), (5182, 1231)],
+    link: "https://malazan.fandom.com/wiki/Ugarat_Odhan"
+  },
+  {
+    name: "Omari",
+    coords: [(5216, 1261)],
+    link: "https://malazan.fandom.com/wiki/Omari"
+  },
+  {
+    name: "Jhena Mountains",
+    coords: [(5076, 1265), (5171, 1316)],
+    link: "https://malazan.fandom.com/wiki/Jhena_Mountains"
+  },
+  {
+    name: "Sarpachiya",
+    coords: [(5009, 1268)],
+    link: "https://malazan.fandom.com/wiki/Sarpachiya"
+  },
+  {
+    name: "T'sarech",
+    coords: [(5011, 1291)],
+    link: "https://malazan.fandom.com/wiki/T'sarech"
+  },
+  {
+    name: "Nahal",
+    coords: [(5008, 1321)],
+    link: "https://malazan.fandom.com/wiki/Nahal"
+  },
+  {
+    name: "Denard",
+    coords: [(5057, 1350)],
+    link: "https://malazan.fandom.com/wiki/Denard"
+  },
+  {
+    name: "Dobre",
+    coords: [(5086, 1390)],
+    link: "https://malazan.fandom.com/wiki/Dobre"
+  },
+  {
+    name: "Geleen",
+    coords: [(5180, 1391)],
+    link: "https://malazan.fandom.com/wiki/Geleen"
+  },
+  {
+    name: "Sarsa",
+    coords: [(5166, 1489)],
+    link: "https://malazan.fandom.com/wiki/Sarsa"
+  },
+  {
+    name: "South Jhag Odhan",
+    coords: [(4925, 1554), (5178, 1573)],
+    link: "https://malazan.fandom.com/wiki/Jhag_Odhan"
+  },
+  {
+    name: "Rhegh Forest",
+    coords: [(5196, 1546), (5259, 1576)],
+    link: "https://malazan.fandom.com/wiki/Rhegh_Forest"
+  },
+  {
+    name: "Aren",
+    coords: [(5288, 1540)],
+    link: "https://malazan.fandom.com/wiki/Aren"
+  },
+  {
+    name: "Dojal Odhan",
+    coords: [(5292, 1467), (5358, 1500)],
+    link: "https://malazan.fandom.com/wiki/Dojal_Odhan"
+  },
+  {
+    name: "Tarxian",
+    coords: [(5281, 1434)],
+    link: "https://malazan.fandom.com/wiki/Tarxian"
+  },
+  {
+    name: "Bay of Bylan",
+    coords: [(5286, 1375), (5359, 1415)],
+    link: "https://malazan.fandom.com/wiki/Bylan"
+  },
+  {
+    name: "Tathimon",
+    coords: [(5232, 1461)],
+    link: "https://malazan.fandom.com/wiki/Tathimon"
+  },
+  {
+    name: "Geleen Plain",
+    coords: [(5191, 1407), (5259, 1440)],
+    link: "https://malazan.fandom.com/wiki/Geleen_Plain"
+  },
+  {
+    name: "Sanimon",
+    coords: [(5228, 1371)],
+    link: "https://malazan.fandom.com/wiki/Sanimon"
+  },
+  {
+    name: "Khundryl Odhan",
+    coords: [(5176, 1328), (5265, 1359)],
+    link: "https://malazan.fandom.com/wiki/Khundryl_Odhan"
+  },
+  {
+    name: "Vathar Forest",
+    coords: [(5179, 1286), (5359, 1303)],
+    link: "https://malazan.fandom.com/wiki/Vathar_Forest"
+  },
+  {
+    name: "Clatar Sea",
+    coords: [(4934, 1416), (5041, 1471)],
+    link: "https://malazan.fandom.com/wiki/Clatar_Sea"
+  },
+  {
+    name: "Sepik Island",
+    coords: [(4245, 934), (4441, 952)],
+    link: "https://malazan.fandom.com/wiki/Sepik"
+  },
+  {
+    name: "Monkan",
+    coords: [(4570, 934)],
+    link: "https://malazan.fandom.com/wiki/Monkan"
+  },
+  {
+    name: "Sepik",
+    coords: [(4468, 1002)],
+    link: "https://malazan.fandom.com/wiki/Sepik"
+  },
+  {
+    name: "Sepik Sea",
+    coords: [(4449, 1148), (4595, 1170)],
+    link: "https://malazan.fandom.com/wiki/Sepik_Sea"
+  },
+  {
+    name: "Western Jhag Odhan",
+    coords: [(4103, 1566), (4369, 1586)],
+    link: "https://malazan.fandom.com/wiki/Jhag_Odhan"
+  },
+  {
+    name: "Reliant City",
+    coords: [(4093, 1848)],
+    link: "https://malazan.fandom.com/wiki/Reliant_City"
+  },
+  {
+    name: "The Great Dry",
+    coords: [(3835, 1918), (4014, 1935)],
+    link: "https://malazan.fandom.com/wiki/Great_Dry"
+  },
+  {
+    name: "Kingdom of Nemil",
+    coords: [(3296, 1458), (3471, 1532)],
+    link: "https://malazan.fandom.com/wiki/Nemil"
+  },
+  {
+    name: "Nemil City",
+    coords: [(3244, 1607)],
+    link: "https://malazan.fandom.com/wiki/Nemil"
+  },
+  {
+    name: "Catal Sea",
+    coords: [(3092, 1396), (3204, 1504)],
+    link: "https://malazan.fandom.com/wiki/Catal_Sea"
+  },
+  {
+    name: "Kingdom of Perish",
+    coords: [(2887, 1381), (3053, 1689)],
+    link: "https://malazan.fandom.com/wiki/Perish"
+  },
+  {
+    name: "Cabal",
+    coords: [(3154, 2151), (3277, 2177)],
+    link: "https://malazan.fandom.com/wiki/Cabal_Archipelago"
+  },
+  {
+    name: "Red Spires",
+    coords: [(3587, 2363)],
+    link: "https://malazan.fandom.com/wiki/Red_Spires"
+  },
+  {
+    name: "Shal-Morzinn Empire",
+    coords: [(3307, 2415), (3569, 2488)],
+    link: "https://malazan.fandom.com/wiki/Shal-Morzinn"
+  },
+  {
+    name: "Demon Plain",
+    coords: [(3339, 2586), (3423, 2632)],
+    link: "https://malazan.fandom.com/wiki/Demon_Plain"
+  },
+  {
+    name: "Cabal Archipelago",
+    coords: [(3047, 2635), (3205, 2670)],
+    link: "https://malazan.fandom.com/wiki/Cabal_Archipelago"
+  },
+  {
+    name: "Piety",
+    coords: [(3358, 2711)],
+    link: "https://malazan.fandom.com/wiki/Piety"
+  },
+  {
+    name: "Glory",
+    coords: [(3334, 2727)],
+    link: "https://malazan.fandom.com/wiki/Glory"
+  },
+  {
+    name: "Farrog",
+    coords: [(3688, 2077), (3840, 2104)],
+    link: "https://malazan.fandom.com/wiki/Farrog"
+  },
+  {
+    name: "Nightmaria",
+    coords: [(3866, 2156), (4096, 2182)],
+    link: "https://malazan.fandom.com/wiki/Nightmaria"
+  },
+  {
+    name: "Genostel",
+    coords: [(8996, 626), (9354, 674)],
+    link: "https://malazan.fandom.com/wiki/Genostel_Archipelago"
+  },
+  {
+    name: "Umyrg",
+    coords: [(9432, 1332)],
+    link: "https://malazan.fandom.com/wiki/Umryg"
+  }
+    ];
+
+    // Add all markers with invisible but large hitboxes
+locations.forEach(loc => {
+  const latlng = map.unproject(loc.coords, map.getMaxZoom());
+  L.circleMarker(latlng, {
+    radius: 15, // Increase for bigger hitbox
+    color: 'transparent',
+    fillOpacity: 0,
+    weight: 0
+  })
+  .bindPopup(`<strong>${loc.name}</strong><br><a href="${loc.link}" target="_blank">Wiki Entry</a>`)
+  .addTo(map);
+});
+
+    // Dev tool – click to get image coordinates
     map.on('click', function(e) {
       const point = map.project(e.latlng, map.getMaxZoom()).floor();
       const message = `Clicked at image coordinates: X=${point.x}, Y=${point.y}`;
@@ -58,26 +3111,20 @@
         .openOn(map);
     });
 
-    // 📍 Unta
-    const unta = map.unproject([5571, 2579], map.getMaxZoom());
-    L.marker(unta)
-      .bindPopup('<strong>Unta</strong><br><a href="https://malazan.fandom.com/wiki/Unta" target="_blank">Wiki Entry</a>')
-      .bindTooltip("Unta", {permanent: false, direction: 'top'})
-      .addTo(map);
+    // Search functionality
+    document.getElementById("locationSearch").addEventListener("keyup", function(e) {
+      const searchTerm = e.target.value.trim().toLowerCase();
+      const match = locations.find(loc => loc.name.toLowerCase() === searchTerm);
 
-    // 📍 Darujhistan
-    const darujhistan = map.unproject([6781, 1526], map.getMaxZoom());
-    L.marker(darujhistan)
-      .bindPopup('<strong>Darujhistan</strong><br><a href="https://malazan.fandom.com/wiki/Darujhistan" target="_blank">Wiki Entry</a>')
-      .bindTooltip("Darujhistan", {permanent: false, direction: 'top'})
-      .addTo(map);
-
-    // 📍 Letheras
-    const letheras = map.unproject([1203, 3511], map.getMaxZoom());
-    L.marker(letheras)
-      .bindPopup('<strong>Letheras</strong><br><a href="https://malazan.fandom.com/wiki/Letheras" target="_blank">Wiki Entry</a>')
-      .bindTooltip("Letheras", {permanent: false, direction: 'top'})
-      .addTo(map);
+      if (match) {
+        const latlng = map.unproject(match.coords, map.getMaxZoom());
+        map.setView(latlng, map.getMaxZoom() - 1);
+        L.popup()
+          .setLatLng(latlng)
+          .setContent(`<strong>${match.name}</strong><br><a href="${match.link}" target="_blank">Wiki Entry</a>`)
+          .openOn(map);
+      }
+    });
   </script>
 </body>
 </html>
