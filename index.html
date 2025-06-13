@@ -15,6 +15,14 @@
     margin: 0;
   }
 
+  body {
+    background-color: #c1e0ff;
+  }
+
+  #map {
+    background-color: #c1e0ff;
+  }
+
   #locationSearch {
     position: absolute;
     top: 10px;
@@ -70,7 +78,7 @@
     // Create Leaflet map
     const map = L.map('map', {
       crs: L.CRS.Simple,
-      minZoom: 0,
+      minZoom: 3,
       maxZoom: 6,
       zoomControl: true
     });
@@ -91,15 +99,15 @@
     map.setMaxBounds(bounds);
 
     // 🖱 Click to get image coordinates
-    map.on('click', function(e) {
-      const point = map.project(e.latlng, map.getMaxZoom()).floor();
-      const message = `Clicked at image coordinates: X=${point.x}, Y=${point.y}`;
-      console.log(message);
-      L.popup()
-        .setLatLng(e.latlng)
-        .setContent(`<code>${message}</code>`)
-        .openOn(map);
-    });
+    //map.on('click', function(e) {
+      //const point = map.project(e.latlng, map.getMaxZoom()).floor();
+      //const message = `Clicked at image coordinates: X=${point.x}, Y=${point.y}`;
+      //console.log(message);
+      //L.popup()
+        //.setLatLng(e.latlng)
+        //.setContent(`<code>${message}</code>`)
+        //.openOn(map);
+    //});
 
     const locations = [
   {
