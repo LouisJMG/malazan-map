@@ -61,11 +61,60 @@
     }).addTo(map);
 
     map.fitBounds(bounds);
-    map.setMaxBounds(bounds);
+map.setMaxBounds(bounds);
 
-    // Invisible marker icon
-    const invisibleIcon = L.divIcon({
-      className: 'invisible-icon'
+// 🔄 Click anywhere on the map to get image coordinates
+map.on('click', function(e) {
+  const point = map.project(e.latlng, map.getMaxZoom()).floor();
+  const message = `Clicked at image coordinates: X=${point.x}, Y=${point.y}`;
+  console.log(message);
+  L.popup()
+    .setLatLng(e.latlng)
+    .setContent(`<code>${message}</code>`)
+    .openOn(map);
+});
+
+// 📍 Add markers for each location
+locations.forEach(loc => {
+  // Handle both single and multiple coordinate sets
+  const coordsArray = Array.isArray(loc.coords[0]) ? loc.coords : [loc.coords];
+
+  coordsArray.forEach(coord => {
+    const latlng = map.unproject(coord, map.getMaxZoom());
+
+    L.circleMarker(latlng, {
+      radius: 15,
+      color: 'transparent',
+      fillOpacity: 0,
+      weight: 0
+    })
+    .bindPopup(`<strong>${loc.name}</strong><br><a href="${loc.link}" target="_blank">Wiki Entry</a>`)
+    .addTo(map);
+  });
+});
+
+// 🔍 Search functionality
+const searchInput = document.createElement('input');
+searchInput.type = 'text';
+searchInput.placeholder = 'Search for a location...';
+searchInput.style.position = 'absolute';
+searchInput.style.top = '10px';
+searchInput.style.left = '10px';
+searchInput.style.zIndex = '1000';
+searchInput.style.padding = '6px';
+searchInput.style.border = '1px solid gray';
+searchInput.style.borderRadius = '4px';
+searchInput.style.width = '200px';
+document.body.appendChild(searchInput);
+
+searchInput.addEventListener('change', () => {
+  const name = searchInput.value.toLowerCase();
+  const match = locations.find(loc => loc.name.toLowerCase() === name);
+  if (match) {
+    const latlng = map.unproject(Array.isArray(match.coords[0]) ? match.coords[0] : match.coords, map.getMaxZoom());
+    map.setView(latlng, 5);
+  }
+});
     });
 
     // Location data
