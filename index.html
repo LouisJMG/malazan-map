@@ -10,14 +10,57 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
-    html, body, #map {
-      height: 100%;
-      margin: 0;
-    }
-  </style>
+  html, body, #map {
+    height: 100%;
+    margin: 0;
+  }
+
+  #locationSearch {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 6px 10px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 200px;
+    z-index: 1000;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+
+  .autocomplete-suggestions {
+    position: absolute;
+    top: 40px;
+    right: 10px;
+    background: white;
+    border: 1px solid #ccc;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1001;
+    width: 200px;
+    font-size: 14px;
+  }
+
+  .autocomplete-suggestion {
+    padding: 6px 10px;
+    cursor: pointer;
+  }
+
+  .autocomplete-suggestion:hover {
+    background-color: #f0f0f0;
+  }
+</style>
 </head>
+
 <body>
   <div id="map"></div>
+
+  <!-- Search bar and suggestions -->
+  <input id="locationSearch" type="text" placeholder="Search location..." />
+  <div class="autocomplete-suggestions" id="suggestions" style="display:none;"></div>
+
+</body>
+
 
   <script>
     // Set original image dimensions
@@ -3100,6 +3143,86 @@ locations.forEach(loc => {
     }).addTo(map);
   }
 });
+
+document.getElementById("locationSearch").addEventListener("keyup", function(e) {
+  if (e.key === "Enter") {
+    const searchTerm = e.target.value.trim().toLowerCase();
+    const match = locations.find(loc => loc.name.toLowerCase() === searchTerm);
+
+    if (match) {
+      let centerPoint;
+
+      if (Array.isArray(match.coords[0])) {
+        // Box: get the center between two corners
+        const [x1, y1] = match.coords[0];
+        const [x2, y2] = match.coords[1];
+        const centerX = (x1 + x2) / 2;
+        const centerY = (y1 + y2) / 2;
+        centerPoint = map.unproject([centerX, centerY], map.getMaxZoom());
+      } else {
+        // Single point
+        centerPoint = map.unproject(match.coords, map.getMaxZoom());
+      }
+
+      map.setView(centerPoint, map.getMaxZoom() - 1);
+
+    
+    }
+  }
+});
+
+const searchInput = document.getElementById('locationSearch');
+const suggestions = document.getElementById('suggestions');
+
+searchInput.addEventListener('input', () => {
+  const value = searchInput.value.toLowerCase();
+  suggestions.innerHTML = '';
+  if (!value) {
+    suggestions.style.display = 'none';
+    return;
+  }
+
+  const matched = locations.filter(loc =>
+    loc.name.toLowerCase().includes(value)
+  );
+
+  if (matched.length === 0) {
+    suggestions.style.display = 'none';
+    return;
+  }
+
+  matched.forEach(loc => {
+    const div = document.createElement('div');
+    div.className = 'autocomplete-suggestion';
+    div.textContent = loc.name;
+    div.addEventListener('click', () => {
+      // Zoom to location
+      const coord = loc.coords;
+      let target;
+
+      if (Array.isArray(coord[0])) {
+        // Rectangle
+        const bounds = L.latLngBounds([
+          map.unproject(coord[0], map.getMaxZoom()),
+          map.unproject(coord[1], map.getMaxZoom())
+        ]);
+        map.fitBounds(bounds);
+      } else {
+        // Single point
+        const point = map.unproject(coord, map.getMaxZoom());
+        map.setView(point, map.getMaxZoom());
+      }
+
+      suggestions.style.display = 'none';
+      searchInput.value = '';
+    });
+    suggestions.appendChild(div);
+  });
+
+  suggestions.style.display = 'block';
+});
+
+
 
   </script>
 </body>
