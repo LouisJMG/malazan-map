@@ -3083,7 +3083,9 @@ locations.forEach(loc => {
       color: "transparent",
       weight: 0,
       fillOpacity: 0
-    }).bindPopup(`<strong>${loc.name}</strong><br><a href="${loc.link}" target="_blank">Wiki Entry</a>`);
+    }).on('click', () => {
+      window.open(loc.link, '_blank');
+    });
     rect.addTo(map);
   } else {
     // Single-point marker
@@ -3093,9 +3095,9 @@ locations.forEach(loc => {
         className: 'invisible-icon',
         iconSize: [30, 30]
       })
-    })
-    .bindPopup(`<strong>${loc.name}</strong><br><a href="${loc.link}" target="_blank">Wiki Entry</a>`)
-    .addTo(map);
+    }).on('click', () => {
+      window.open(loc.link, '_blank');
+    }).addTo(map);
   }
 });
 
