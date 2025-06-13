@@ -3090,7 +3090,7 @@
     // Add all markers with invisible but large hitboxes
 locations.forEach(loc => {
   loc.coords.forEach(coord => {
-    const latlng = map.unproject(coord, map.getMaxZoom());
+    const latlng = map.unproject(match.coords[0], map.getMaxZoom());
     L.marker(latlng, { icon: invisibleIcon }) // or L.circleMarker if preferred
       .bindPopup(`<strong>${loc.name}</strong><br><a href="${loc.link}" target="_blank">Wiki Entry</a>`)
       .addTo(map);
