@@ -58,6 +58,24 @@
   .autocomplete-suggestion:hover {
     background-color: #f0f0f0;
   }
+
+  #patreon-link {
+    position: absolute;
+    top: 5px;
+    left: 40px;
+    z-index: 9999;
+    display: block;
+  }
+
+  #patreon-link img {
+    width: 150px; /* Adjust size as needed */
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+  }
+
+  #patreon-link img:hover {
+    opacity: 1;
+  }
 </style>
 </head>
 
@@ -3233,6 +3251,14 @@ searchInput.addEventListener('input', () => {
 
 
 
+
   </script>
+
+<a href="https://patreon.com/LouisJMG" 
+   target="_blank" 
+   id="patreon-link">
+  <img src="assets/patreon-logo.png" alt="Support on Patreon" />
+</a>
+
 </body>
 </html>
